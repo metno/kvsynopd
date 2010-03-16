@@ -1,7 +1,7 @@
 Source: kvalobs
 Section: main
 Priority: extra
-Maintainer: <kvalobs@met.no>
+Maintainer: kvalobs <kvalobs@met.no>
 Build-Depends: debhelper (>= 5), autotools-dev, lsb, g++ (>= 4.1.1), debconf,
  automake, libtool, g77 (>= 3.4.6), bison (>= 2.3), flex (>= 2.5.33), 
  sqlite3 (>= 3.3.8), libsqlite3-dev (>= 3.3.8),
