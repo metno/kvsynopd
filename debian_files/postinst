@@ -27,11 +27,8 @@ db_get kvalobs/homedir && KV_HOME="$RET"
 
 #BINDIR, BIN and DIR must be in sync with the respectives variables in postrm.
 BINDIR="/usr/bin"
-BIN="kv2kro kvAgregated  kvDataInputd kvDataInputd_clt kvdbadmin 
-     kvManagerd kvmgrclt kvQabased kvServiced kvstart kvstop 
-     kvsynopclt kvsynopd kvsynopdbadmin kvsynopdbclt
-     kvsynopd_initdb kvsynopdparse norcom2kv kvstart-postgres
-     kvstop-postgres"
+BIN="kvsynopclt kvsynopd kvsynopdbadmin kvsynopdbclt
+     kvsynopd_initdb kvsynopdparse"
 
 KVBINDIR="/usr/lib/kvalobs/bin"
 KVBIN="check_kvsynopd.sh
