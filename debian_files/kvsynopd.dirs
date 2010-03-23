@@ -2,7 +2,7 @@ etc/kvsynopd
 usr/bin
 usr/share/kvsynopd
 var/lib/kvsynopd
-var/lib/kvsynopd/run
+var/lib/kvalobs/run
 var/log/kvsynopd
 var/log/kvsynopd/debug
 var/log/kvsynopd/run

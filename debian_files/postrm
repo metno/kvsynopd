@@ -20,72 +20,27 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-#BINDIR, BIN and DIR must be in sync with the respectives variables in postinst.
 
+#BINDIR, BIN and DIR must be in sync with the respectives variables in postrm.
 BINDIR="/usr/bin"
-BIN="kv2kro kvAgregated kvDataInputd kvDataInputd_clt kvdbadmin 
-     kvManagerd kvmgrclt kvQabased kvServiced kvstart kvstop 
-     kvsynopclt kvsynopd kvsynopdbadmin kvsynopdbclt
-     kvsynopd_initdb kvsynopdparse norcom2kv kvstart-postgres
-     kvstop-postgres"
+BIN="check_kvsynopd.sh kvsynopclt kvsynopd kvsynopdbadmin kvsynopdbclt
+     kvsynopd_initdb kvsynopdparse"
 
-KVBINDIR="/usr/lib/kvalobs/bin"
-KVBIN="check_kvsynopd.sh
-       hirlam2kvalobs.sh
-       kvdbadmin.sh
-       kvsynopdbadmin.sh
-       lam2kv.cron
-       qabase_cron.sh
-       save_last_month.sh
-       synopdecoder_cron.sh"
+KVBINDIR=""
+KVBIN=""
 
+ETC_FILES=" "
 
-ETC_FILES="kv_ctl.conf 
-           kvcron
-           lam2kv/metdat.1h    
-           lam2kv/metdat.RR24         
-           lam2kv/posdat.PP    
-           lam2kv/pose.kvalobs
-           lam2kv/metdat.PP    
-           lam2kv/parameters.kvalobs  
-           lam2kv/posdat.RR12  
-           lam2kv/metdat.RR12  
-           lam2kv/parmap.kvalobs      
-           lam2kv/posdat.RR24  
-           lam2kv/stations.kvalobs
-           "
+DIRS="/usr/share/kvsynopd 
+      /var/lib/kvsynopd
+      /var/log/kvsynopd/debug
+      /var/log/kvsynopd
+      /var/log/kvsynopd/kvsynopdbadmin
+      /var/lib/kvalobs/run
+      /var/lib/kvalobs/service
+      /var/lib/kvalobs/service/subscribers"     
 
-
-DIRS="/usr/share/kvalobs 
-      /usr/share/kvalobs/db
-      /usr/share/kvalobs/kvsynop 
-      /usr/share/kvalobs/metadata 
-      /etc/kvalobs
-      /etc/kvalobs/lam2kv
-      /var/kvalobs
-      /var/kvalobs/norcom2kv
-      /var/kvalobs/norcom2kv/data2kv
-      /var/kvalobs/norcom2kv/tmp
-      /var/kvalobs/lam2kv
-      /var/kvalobs/lam2kv/log
-      /var/kvalobs/lam2kv/upload
-      /var/kvalobs/lam2kv/data
-      /var/kvalobs/agregate
-      /var/kvalobs/kvsynop
-      /var/kvalobs/kvsynop/debug
-      /var/kvalobs/log
-      /var/kvalobs/log/decoders
-      /var/kvalobs/log/decoders/SynopDecoder
-      /var/kvalobs/log/kvsynopdbadmin
-      /var/kvalobs/log/kvdbadmin
-      /var/kvalobs/log/html
-      /var/kvalobs/log/kvsynop
-      /var/kvalobs/run
-      /var/kvalobs/service
-      /var/kvalobs/service/subscribers"     
-
-SQLLITE_DB="/var/kvalobs/kvsynop/kvsynopd.sqlite
-            /var/kvalobs/agregate/database.sqlite"
+SQLLITE_DB="/var/lib/kvsynopd/kvsynopd.sqlite"
 
 case "$1" in
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

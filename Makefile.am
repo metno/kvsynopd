@@ -9,7 +9,7 @@ SED_SUBST = sed s,KVCONFIG,$(bindir)/kvconfig,g $< > $@
 kvsynopdbadmin: kvsynopdbadmin.sh 
 	$(SED_SUBST)
 	
-EXTRA_DIST = cleansynopdb.sql kvsynopdbadmin.sh
+EXTRA_DIST = cleansynopdb.sql kvsynopdbadmin.sh changelog
 
 CLEANFILES = kvsynopdbadmin
 

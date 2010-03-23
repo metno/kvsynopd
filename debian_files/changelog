@@ -1,5 +1,5 @@
 kvsynopd (2.1.0-1) unstable; urgency=low
 
- * Initial release of kvsynopd as a stand alone package.
+  * Initial release of kvsynopd as a stand alone package.
 
  -- Kvalobs <kvalobs@met.no>  Tue, 16 Mar 2010 18:30:00 +0100
