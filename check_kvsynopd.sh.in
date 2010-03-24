@@ -1,6 +1,6 @@
 #! /bin/sh
 
-KVALOBS=@localstatedir@
+prefix=@prefix@
 KVPID=@localstatedir@/run/kvalobs
 KVSYNOPD_PIDFILE=$KVPID/kvsynopd.pid
 KVSERVICED_PIDFILE=$KVPID/kvServiced.pid
