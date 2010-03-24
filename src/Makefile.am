@@ -62,7 +62,7 @@ sql_DATA=kvsynopd_schema.sql
 bin_SCRIPTS = kvsynopd_initdb
 
 TESTS=kvSynopEncodeTest
-noinst_PROGRAMS=kvSynopEncodeTest
+#noinst_PROGRAMS=kvSynopEncodeTest
 
 check_PROGRAMS=kvSynopEncodeTest
 
