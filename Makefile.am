@@ -20,7 +20,6 @@ install-data-hook:
 	$(install_sh) -m 755 -d $(DESTDIR)/$(localstatedir)/log/kvalobs
 	$(install_sh) -m 755 -d $(DESTDIR)/$(localstatedir)/log/kvalobs/kvsynop
 	$(install_sh) -m 755 -d $(DESTDIR)/$(datadir)/@PACKAGE_NAME@
-	$(install_sh)
 
 #pkgconfig_DATA = @PACKAGE_TARNAME@.pc
 #$(pkgconfig_DATA): config.status
