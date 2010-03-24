@@ -33,9 +33,8 @@ ETC_FILES=" "
 
 DIRS="/usr/share/kvsynopd 
       /var/lib/kvsynopd
-      /var/log/kvsynopd/debug
-      /var/log/kvsynopd
-      /var/log/kvsynopd/kvsynopdbadmin
+      /var/log/kvalobs/debug
+      /var/log/kvalobs/kvsynop
       /var/lib/kvalobs/run
       /var/lib/kvalobs/service
       /var/lib/kvalobs/service/subscribers"     

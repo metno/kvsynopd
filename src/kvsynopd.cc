@@ -141,7 +141,7 @@ main(int argn, char **argv)
   //Write the subscriber id to the file $KVALOBS/var/kvsynop/datasubscriber.id
   ofstream subidfile;
 
-  subidfile.open( string(kvPath("localstatedir")+"/kvsynop/datasubscriber.id").c_str());
+  subidfile.open( string(kvPath("localstatedir", "kvsynopd")+"/datasubscriber.id").c_str());
 
   if(subidfile.is_open()){
     subidfile << id << endl;
