@@ -1,10 +1,10 @@
 #! /bin/sh
 
-KVALOBS=$HOME
-KVPID=$KVALOBS/var/run
-KVSYNOPD_PIDFILE=$KVALOBS/var/run/kvsynopd.pid
-KVSERVICED_PIDFILE=$KVALOBS/var/run/kvServiced.pid
-SUBIDFILE=$KVALOBS/var/kvsynop/datasubscriber.id
+KVALOBS=@localstatedir@
+KVPID=@localstatedir@/run/kvalobs
+KVSYNOPD_PIDFILE=$KVPID/kvsynopd.pid
+KVSERVICED_PIDFILE=$KVPID/kvServiced.pid
+SUBIDFILE=@localstatedir@/kvalobs/kvsynop/datasubscriber.id
 TIMEOUT=120
 
 
@@ -111,14 +111,14 @@ if [ ! -f $SUBIDFILE ]; then
 fi
 
 
-SUBID=$(cat $KVALOBS/var/kvsynop/datasubscriber.id)
+SUBID=$(cat $SUBIDFILE)
 
 if [ -z "$SUBID" ]; then
     echo "The subscriberfile <$SUBIDFILE> is empty!"
     exit 0
 fi 
 
-if [ ! -f $KVALOBS/var/kvalobs/service/subscribers/$SUBID.sub ]; then
+if [ ! -f @localstatedir@/lib/kvalobs/service/subscribers/$SUBID.sub ]; then
     date
     echo "kvServiced has forgotten us!!!????"
     dd=$(date '+%Y%m%dT%H%M%S')
@@ -131,7 +131,7 @@ if [ ! -f $KVALOBS/var/kvalobs/service/subscribers/$SUBID.sub ]; then
     
     echo "Starting kvsynopd ........."
    
-    $KVALOBS/bin/kvsynopd -1 > /dev/null  2>&1 &
+    @execbin@/kvsynopd -1 > /dev/null  2>&1 &
 else
     echo "$(date) Ok!"
 fi

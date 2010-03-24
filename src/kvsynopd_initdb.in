@@ -1,8 +1,8 @@
 #! /bin/sh
 
 prefix=@prefix@
-DBSCHEMA="@datadir@/kvalobs/kvsynop/kvsynopd_schema.sql"
-DBDIR="@localstatedir@/@PACKAGE_NAME@/kvsynop"
+DBSCHEMA="@datadir@/kvsynopd/kvsynopd_schema.sql"
+DBDIR="@localstatedir@/lib/@PACKAGE_NAME@"
 DBNAME="kvsynopd.sqlite"
 
 if ! mkdir -p "${DBDIR}" ; then
