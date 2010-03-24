@@ -3,6 +3,6 @@ usr/bin
 usr/share/kvsynopd
 var/lib/kvsynopd
 var/lib/kvalobs/run
-var/log/kvsynopd
-var/log/kvsynopd/debug
-var/log/kvsynopd/run
+var/log/kvalobs
+var/log/kvalobs/kvsynop/debug
+var/run/kvalobs
