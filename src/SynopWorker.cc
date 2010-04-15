@@ -670,7 +670,8 @@ SynopWorker::loadSynopData(const DataEntryList &dl,
 			   SynopDataList       &sd, 
 			   StationInfoPtr      info)const
 {
-	loadSynopData( dl, sd, info );
+   kvdatacheck::Validate validate( kvdatacheck::Validate::UseOnlyUseInfo );
+	::loadSynopData( dl, sd, info, validate );
 }
 
 
