@@ -176,38 +176,40 @@ StationInfo::
 delay(int hour, int &minute, 
       bool &force,  bool &relativToFirst)const
 {
-  	bool         stime=hour%3==0; //Is it a synop time.
-  	CITDelayList it=delayList_.begin();
+   bool         stime=hour%3==0; //Is it a synop time.
+   CITDelayList it=delayList_.begin();
 
-  	relativToFirst=false;
-  	minute=-1;
+   relativToFirst=false;
+   minute=-1;
 
-  	if(it==delayList_.end())
-   	 	return false;
-  
-  	for( ;it!=delayList_.end(); it++){
-    	if(it->hour()==hour){
-      		break;
-    	}else if(it->hour()<0){
-      		if(stime){
-				if(it->hour()==DelayInfo::STIME){
-	  				break;
-				}else if(it->hour()==DelayInfo::FSTIME){
-	  				relativToFirst=true;
-	  				break;
-				}
-      		}else if(it->hour()==DelayInfo::HTIME)
-				break;
-    	}
-  	}
-  
-  	if(it!=delayList_.end()){
-    	force=it->force();
-    	minute=it->delay();
-    	return true;
-  	}
-  
-  	return false;
+   if(it==delayList_.end())
+      return false;
+
+   for( ;it!=delayList_.end(); it++){
+      if(it->hour()==hour){
+         break;
+      }else if(it->hour()<0){
+         if(stime){
+            if(it->hour()==DelayInfo::STIME){
+               break;
+            }else if(it->hour()==DelayInfo::FSTIME || it->hour()==DelayInfo::FHTIME){
+               relativToFirst=true;
+               break;
+            }
+         }if ( it->hour() == DelayInfo::FHTIME){
+            relativToFirst=true;
+         }else if(it->hour()==DelayInfo::HTIME)
+            break;
+      }
+   }
+
+   if(it!=delayList_.end()){
+      force=it->force();
+      minute=it->delay();
+      return true;
+   }
+
+   return false;
 }
 
 bool 

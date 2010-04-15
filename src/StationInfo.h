@@ -71,7 +71,9 @@ class StationInfoParse;
  *                 FH:mm  - Force a delay for all hours.
  *                 fS:mm  - Delay max mm minutes after the first data is 
  *                          received for all synoptimes.
- * 		           -SS    - Dont generate synop for synoptimes.
+ *                 fH:mm  - Delay max mm minutes after the first data is
+ *                          received for all hours.
+ *                 -SS    - Dont generate synop for synoptimes.
  *                 -tt    - Dont generate synop for the hour tt, where
  * 	                        tt is in the range [0,23].
  * 		
@@ -130,7 +132,7 @@ class DelayInfo
 	}
 
 public:
-  	enum {STIME=-1, HTIME=-2, FSTIME=-3, SKIP_SYNOP=127, UNDEF=-128};
+  	enum {STIME=-1, HTIME=-2, FSTIME=-3, FHTIME=-3,SKIP_SYNOP=127, UNDEF=-128};
 
   	DelayInfo(int hour=UNDEF)
     	:hour_(hour), delay_(0), force_(false), synoptimes_(0){
