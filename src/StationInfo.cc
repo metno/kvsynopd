@@ -403,60 +403,63 @@ std::ostream&
 operator<<(std::ostream& ost,
 	   const DelayInfo& sd)
 {
-  	if(sd.undef()){
-    	ost << "\"*** UNDEFINED ***\"";
-    	return ost;
-  	}
-	
-	if(sd.skipSynopSpec()){
-		bool first=true;
-		for(int i=0; i<23; i++){
-			if(!sd.synoptimes_[i]){
-				if(first){
-					ost << "\"-" << i;
-					first=false;
-				}else{
-					ost << ",-" << i;
-				}
-			}
-  		}
-  		
-  		if(!first)
-			ost << "\"";
-  		
-  		return ost;
-	}
-	
-  	if(sd.hour()>=0){
-    	ost << "\"" << sd.hour() << ":" << sd.delay() << "\"";
-  	}else{
-    	if(sd.force()){
-      		ost << "\"F";
-      		if(sd.hour()==DelayInfo::STIME){
-				ost << "S:";
-      		}else{
-				ost << "H:";
-      		}
-    	}else{
-      		if(sd.hour()==DelayInfo::STIME){
-				ost << "\"SS:";
-      		}else if(sd.hour()==DelayInfo::FSTIME){
-				ost << "\"fS:";
-      		}else{
-				ost << "\"HH:";
-      		}
-    	}
-    
-    	ost << sd.delay();
-    
-    	if(sd.force()){
-      		ost << "(1)\"";
-    	}else{
-      		ost << "(0)\"";
-    	}
- 	}
-  
-  	return ost;
+   if(sd.undef()){
+      ost << "\"*** UNDEFINED ***\"";
+      return ost;
+   }
+
+   if(sd.skipSynopSpec()){
+      bool first=true;
+      for(int i=0; i<23; i++){
+         if(!sd.synoptimes_[i]){
+            if(first){
+               ost << "\"-" << i;
+               first=false;
+            }else{
+               ost << ",-" << i;
+            }
+         }
+      }
+
+      if(!first)
+         ost << "\"";
+
+      return ost;
+   }
+
+   if(sd.hour()>=0){
+      ost << "\"" << sd.hour() << ":" << sd.delay() << "\"";
+   }else{
+      if(sd.force()){
+         ost << "\"F";
+         if(sd.hour()==DelayInfo::STIME){
+            ost << "S:";
+         }else{
+            ost << "H:";
+         }
+      }else{
+         if(sd.hour()==DelayInfo::STIME){
+            ost << "\"SS:";
+         }else if(sd.hour()==DelayInfo::FSTIME){
+            ost << "\"fS:";
+         }else if(sd.hour()==DelayInfo::FHTIME){
+            ost << "\"fH:";
+         }
+         else{
+            ost << "\"HH:";
+         }
+      }
+
+      ost << sd.delay();
+
+      if(sd.force()){
+         ost << " Force: true\"";
+      }else{
+         ost << " Force: false\"";
+      }
+   }
+
+   return ost;
 }
 
 
