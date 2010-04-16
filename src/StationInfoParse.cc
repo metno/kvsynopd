@@ -292,7 +292,7 @@ doWmoDefault(miutil::conf::ConfSection *stationConf)
    }
 
    if(defVal.delay.empty()){
-      defVal.delay.push_back(DelayInfo(DelayInfo::FHTIME, 5, false));
+      defVal.delay.push_back(DelayInfo(DelayInfo::FSTIME, 5, false));
       LOGINFO("Setting default delay to: " << defVal.delay.front() << endl);
    }
 
