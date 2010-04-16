@@ -3,6 +3,18 @@ AM_CPPFLAGS = -D_REENTRANT \
               $(BOOST_CPPFLAGS) \
               $(omniORB4_CFLAGS)  
 
+
+nodist_idl_sources=kvsynopd.idl 
+
+
+CLEANFILES = $(idl_sources:.idl=SK.cc) $(idl_sources:.idl=.hh) 
+
+
+%SK.cc %.hh: %.idl
+	$(IDL) -bcxx -Wbinline -I$(KVIDLDIR) $<
+
+
+
 bin_PROGRAMS = kvsynopd kvsynopclt kvsynopdbclt kvsynopdparse
 
 kvsynopd_SOURCES = kvsynopd.cc \
@@ -27,7 +39,8 @@ kvsynopd_SOURCES = kvsynopd.cc \
                    getDataReceiver.cc getDataReceiver.h \
                    GetDataThread.cc GetDataThread.h \
                    kvsynopdImpl.h obsevent.h \
-                   LoadSynopData.h LoadSynopData.cc
+                   LoadSynopData.h LoadSynopData.cc \
+                   kvsynopd.hh kvsynopdSK.cc
 
 kvsynopd_CPPFLAGS = $(AM_CPPFLAGS) 
 kvsynopd_LDFLAGS = -pthread -export-dynamic $(BOOST_LDFLAGS)
@@ -39,7 +52,9 @@ EXTRA_DIST = kvsynopd_schema.sql
 kvsynopclt_SOURCES = kvsynopclt.cc \
                      kvsynopCltSynopcbImp.cc kvsynopCltSynopcbImp.h \
                      kvsynopCltApp.cc  kvsynopCltApp.h \
-                     kvsynopCorbaThread.cc kvsynopCorbaThread.h
+                     kvsynopCorbaThread.cc kvsynopCorbaThread.h \
+                     kvsynopd.hh kvsynopdSK.cc
+                     
 kvsynopclt_CPPFLAGS = $(AM_CPPFLAGS)
 kvsynopclt_LDFLAGS = -pthread $(BOOST_LDFLAGS)
 kvsynopclt_LDADD = $(kvcpp_LIBS) $(BOOST_THREAD_LIB) \
