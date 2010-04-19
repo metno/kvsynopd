@@ -40,7 +40,7 @@
 #include <list>
 #include <puTools/miTime.h>
 #include <boost/thread/mutex.hpp>
-#include <kvskel/kvsynopd.hh>
+#include "kvsynopd.hh"
 #include "kvsynopdImpl.h"
 #include "StationInfo.h"
 #include "Waiting.h"

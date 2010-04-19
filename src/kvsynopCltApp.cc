@@ -34,7 +34,7 @@
 #include <signal.h>
 #include <getopt.h>
 #include <iostream>
-#include <kvskel/kvsynopd.hh>
+#include "kvsynopd.hh"
 #include <list>
 #include <stdio.h>
 #include "kvsynopCltApp.h"

@@ -31,7 +31,7 @@
 #ifndef __kvsynopCltSynopcbImpl_h__
 #define __kvsynopCltSynopcbImpl_h__
 
-#include <kvskel/kvsynopd.hh>
+#include "kvsynopd.hh"
 #include "kvsynopCltApp.h"
 //
 // Example class implementing IDL interface kvsynopd::synopcb

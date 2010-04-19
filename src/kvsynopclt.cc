@@ -32,7 +32,7 @@
 #include <getopt.h>
 #include <iostream>
 #include <sstream>
-#include <kvskel/kvsynopd.hh>
+#include "kvsynopd.hh"
 #include <kvalobs/kvPath.h>
 #include <miconfparser/miconfparser.h>
 #include <list>

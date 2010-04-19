@@ -31,7 +31,7 @@
 #ifndef __kvsynopdImpl_h__
 #define __kvsynopdImpl_h__
 
-#include <kvskel/kvsynopd.hh>
+#include "kvsynopd.hh"
 #include "obsevent.h"
 #include <kvskel/adminInterface.h>
 

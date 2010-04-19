@@ -33,7 +33,6 @@
 #include <sstream>
 #include <milog/milog.h>
 #include <kvalobs/kvDbGate.h>
-#include <kvskel/kvsynopd.hh>
 #include "obsevent.h"
 //#include "ValidData.h"
 #include "tblWaiting.h"

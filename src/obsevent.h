@@ -34,7 +34,7 @@
 #include <sstream>
 #include <dnmithread/CommandQue.h>
 #include <puTools/miTime.h>
-#include <kvskel/kvsynopd.hh>
+#include "kvsynopd.hh"
 #include "StationInfo.h"
 #include "Waiting.h"
 
