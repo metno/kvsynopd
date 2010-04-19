@@ -17,7 +17,8 @@ CLEANFILES = $(idl_sources:.idl=SK.cc) $(idl_sources:.idl=.hh)
 
 bin_PROGRAMS = kvsynopd kvsynopclt kvsynopdbclt kvsynopdparse
 
-kvsynopd_SOURCES = kvsynopd.cc \
+kvsynopd_SOURCES = kvsynopd.hh kvsynopdSK.cc \
+				   kvsynopd.cc \
                    App.cc App.h \
                    DataReceiver.cc DataReceiver.h \
                    Data.cc Data.h \
@@ -39,8 +40,7 @@ kvsynopd_SOURCES = kvsynopd.cc \
                    getDataReceiver.cc getDataReceiver.h \
                    GetDataThread.cc GetDataThread.h \
                    kvsynopdImpl.h obsevent.h \
-                   LoadSynopData.h LoadSynopData.cc \
-                   kvsynopd.hh kvsynopdSK.cc
+                   LoadSynopData.h LoadSynopData.cc 
 
 kvsynopd_CPPFLAGS = $(AM_CPPFLAGS) 
 kvsynopd_LDFLAGS = -pthread -export-dynamic $(BOOST_LDFLAGS)
