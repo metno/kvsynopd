@@ -539,10 +539,49 @@ Synop::Tid_Kode(std::string &kode, int time)
  * 'hast' maa omregnes til knop foer den settes i synop koden.
  *  
  ******/
-
 void 
 Synop::Naa_Vind_Kode(std::string &kode, float retn, float hast)
 {  
+   char tmp[30];
+   string ffCode="//";
+   string ddCode="//";
+
+   if( hast < 0 || hast > 98 )
+      hast = FLT_MAX;
+
+   if( retn < 0 || retn > 360 )
+      retn = FLT_MAX;
+
+   if( hast != FLT_MAX ) {
+      if( hast < 1.0 ) { //No wind
+         kode="0000";
+         return;
+      }
+
+      hast = floor( (double) hast+0.5 );
+      sprintf(tmp,"%02.0f", hast );
+      ffCode = tmp;
+   }
+
+   if( retn != FLT_MAX ) {
+      if(retn>=5)
+         retn = floor( (double)(retn/10)+0.5 );
+      else
+         retn = 36;
+
+      sprintf(tmp, "%02.0f", retn );
+      ddCode = tmp;
+      kode=tmp;
+   }
+
+   kode = ddCode + ffCode;
+}
+
+
+#if 0
+void
+Synop::Naa_Vind_Kode(std::string &kode, float retn, float hast)
+{
   	char tmp[30];
   	
   	kode="////";
@@ -595,7 +634,7 @@ Synop::Naa_Vind_Kode(std::string &kode, float retn, float hast)
     	}
   	}
 }
-
+#endif
 
 
 /*
