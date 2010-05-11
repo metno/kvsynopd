@@ -7,13 +7,15 @@ AM_CPPFLAGS = -D_REENTRANT \
 nodist_idl_sources=kvsynopd.idl 
 
 
-CLEANFILES = $(idl_sources:.idl=SK.cc) $(idl_sources:.idl=.hh) 
+CLEANFILES = $(nodist_idl_sources:.idl=SK.cc) $(nodist_idl_sources:.idl=.hh) 
 
 
 %SK.cc %.hh: %.idl
-	$(IDL) -bcxx -Wbinline -I$(KVIDLDIR) $<
+#	$(IDL) -bcxx -Wbinline -I$(KVIDLDIR) $<
+	$(IDL) -bcxx -I$(KVIDLDIR) $<
 
 
+noinst_PROGRAMS = kvSynopEncodeTest
 
 bin_PROGRAMS = kvsynopd kvsynopclt kvsynopdbclt kvsynopdparse
 
