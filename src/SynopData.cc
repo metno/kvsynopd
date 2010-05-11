@@ -521,7 +521,18 @@ SynopDataList::~SynopDataList()
 
 
 
+miutil::miTime
+SynopDataList::
+firstTime() const
+{
+   CISynopDataList it=dataList.begin();
 
+    if( it == dataList.end() )
+      return miutil::miTime();
+
+    return it->time();
+
+}
   /**
    * \exception 
    */
@@ -678,6 +689,16 @@ SynopDataList::find(const miutil::miTime &from)const
   return dataList.end();
 }
 
+SynopDataList
+SynopDataList::subData( const miutil::miTime &from, const miutil::miTime &to ) const
+{
+   SynopDataList retList;
+
+   for( CISynopDataList it = find( from ); it != end() || ( !to.undef() && to>=it->time()); ++it )
+      retList.dataList.push_back( *it );
+
+   return retList;
+}
 
 SynopDataList::SynopDataProxy& 
 SynopDataList::SynopDataProxy::operator=(const SynopData &rhs) //lvalue use

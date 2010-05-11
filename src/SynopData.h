@@ -181,6 +181,12 @@ public:
 
   	void clear(){ dataList.clear();}
 
+
+  	/**
+  	 * @return undef if list is empty.
+  	 */
+  	miutil::miTime firstTime() const;
+
   	/**
   	 * If used as a lvalue the SynopData record wil be inserted if it don't
   	 * exist.  The current record at timeIndex will be replaced if it exist.
@@ -231,6 +237,8 @@ public:
   	CISynopDataList begin()const{ return dataList.begin();}
   	ISynopDataList  end(){ return dataList.end();}
   	CISynopDataList end()const { return dataList.end();}
+
+  	SynopDataList subData( const miutil::miTime &from, const miutil::miTime &to=miutil::miTime() ) const;
 
   	friend std::ostream& operator<<(std::ostream& ost,
 				 					  const SynopDataList& sd);
