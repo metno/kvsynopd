@@ -29,6 +29,7 @@
   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include <milog/milog.h>
+#include <stdlib.h>
 #include "Validate.h"
 
 using namespace kvalobs;
@@ -177,9 +178,30 @@ Validate::
 validDataUseOnlyUseInfo( const Data &data )
 {
   kvUseInfo uinfo=data.useinfo();
+  kvControlInfo cinfo=data.controlinfo();
 
   int uinfo_2; // QA level for original data value.
   int uinfo_3; //Treatment of original data value.
+
+  if( atoi( data.original().c_str() ) == -32767 )
+    return false;
+
+  if( ! check_useinfo1( uinfo, data.paramID() ) ) {
+    LOGINFO("REJECTED useinfo(1): stationid: " << data.stationID() 
+	    << " obstime: " << data.obstime()
+	    << " paramid: " << data.paramID() 
+	    << " original: " << data.original());
+    return false;
+  }
+    
+
+  if( ! check_fmis( cinfo, data.paramID() ) ) {
+    LOGINFO("REJECTED (fmis): stationid: " << data.stationID() 
+	    << " obstime: " << data.obstime()
+	    << " paramid: " << data.paramID() 
+	    << " original: " << data.original());
+    return false;
+  }
 
   uinfo_2=data.useinfo().flag( 2 );
   uinfo_3=data.useinfo().flag( 3 );
@@ -187,7 +209,7 @@ validDataUseOnlyUseInfo( const Data &data )
   if( ! (uinfo_3 == 0 || uinfo_3 == 9)  )
 	  return false;
 
-  if( (uinfo_2 <= 1) || uinfo_2 == 9  )
+  if( (uinfo_2 <= 2) || uinfo_2 == 9  )
 	  return true;
 
   return false;

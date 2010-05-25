@@ -14,7 +14,6 @@ CLEANFILES = $(nodist_idl_sources:.idl=SK.cc) $(nodist_idl_sources:.idl=.hh)
 #	$(IDL) -bcxx -Wbinline -I$(KVIDLDIR) $<
 	$(IDL) -bcxx -I$(KVIDLDIR) $<
 
-
 noinst_PROGRAMS = kvSynopEncodeTest
 
 bin_PROGRAMS = kvsynopd kvsynopclt kvsynopdbclt kvsynopdparse
@@ -90,7 +89,7 @@ kvSynopEncodeTest_SOURCES = test/kvSynopEncodeTest.cc \
 							DataList.cc DataList.h \
 		                    SynopData.cc SynopData.h \
 		                    StationInfo.cc StationInfo.h \
-        		            StationInfoParse.cc StationInfoParse.h \
+				    StationInfoParse.cc StationInfoParse.h \
 		                    synop.cc synop.h \
 		                    Validate.cc Validate.h \
 		                    InitLogger.cc InitLogger.h \
