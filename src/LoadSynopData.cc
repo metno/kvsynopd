@@ -69,7 +69,7 @@ loadSynopData(const DataEntryList &dl,
 				//COMMENT:
 				//We use only the default sensor for every parameter, ie sensor=0.
 				//This may be to restrective. Shuld this be a configuration option for
-				//the parameters we wish to overide tis behavior for.
+				//the parameters we wish to overide this behavior for.
 
 				if(itd->sensor()==0 && itd->level()==0){
 					if( validate( *itd ) )
