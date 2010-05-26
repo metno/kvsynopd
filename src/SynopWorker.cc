@@ -111,7 +111,7 @@ SynopWorker::operator()()
 	    		  << (event->hasCallback()?"T":"F"));
 
     	try{
-      	FLogStream *logs=new FLogStream(2, 307200); //300k
+      	FLogStream *logs=new FLogStream(2, 512000); //500k
       	std::ostringstream ost;
 
       	ost << kvPath("logdir") << "/kvsynop/"
@@ -435,7 +435,7 @@ SynopWorker::newObs(ObsEvent &event)
   	ost.str("");
 
   	for(int i=0;it!=synopData.end(); i++, it++)
-    	ost << it->time() << "  [" << i << "] " << synopData[i].time() <<endl;
+    	ost << it->time() << "  [" << i << "] " << synopData[i].time() << " #: " << it->nSet  << endl;
   
   	LOGINFO("# number of synopdata: " << synopData.size() << endl<<
    		  "Continues: " << synopData.nContinuesTimes() << endl <<

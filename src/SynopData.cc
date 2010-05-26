@@ -37,6 +37,7 @@
 using namespace decodeutility;
 
 SynopData::SynopData():
+    nSet( 0 ),
     tempNaa(FLT_MAX),
     tempMid(FLT_MAX), 
     tempMin(FLT_MAX),
@@ -104,7 +105,8 @@ SynopData::SynopData():
 
 
 SynopData::SynopData(const SynopData &p):
-    time_(p.time_), 
+    time_(p.time_),
+    nSet( p.nSet ),
     tempNaa(p.tempNaa),
     tempMid(p.tempMid), 
     tempMin(p.tempMin),
@@ -185,6 +187,7 @@ SynopData::operator=(const SynopData &p)
 	return *this;
 
     time_            =p.time_;
+    nSet             =p.nSet;
     tempNaa          =p.tempNaa;
     tempMid          =p.tempMid; 
     tempMin          =p.tempMin;
@@ -311,6 +314,8 @@ SynopData::setData(const int  &param,
 
     im=static_cast<int>(round(fData));
     sprintf(buf, "%d", im);
+
+    nSet++;
 
     switch(param){
     case 211: tempNaa=fData;       break; //TA
@@ -490,6 +495,7 @@ SynopData::setData(const int  &param,
               AA=buf;
 	      break;
     default:
+       nSet--;
       return false;
     }
     

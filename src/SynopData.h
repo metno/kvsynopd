@@ -44,6 +44,7 @@ class  SynopData
   	friend class SynopDataList;
   	//  friend class SynopDataList::SynopDataProxy  
  public:
+  	int    nSet;
   	float  tempNaa;       
   	float  tempMid;       
   	float  tempMin;       

@@ -224,16 +224,16 @@ validDataUseOnlyUseInfo( const Data &data )
 
 	  return false;
   }
-  if( (uinfo_2 <= 2) || uinfo_2 == 9  ) {
+  if( ! (uinfo_2 <= 2 || uinfo_2 == 9) ) {
      LOGINFO("REJECTED useinfo(2)="<< uinfo_2 << " : stationid: " << data.stationID() << " typeid: " << data.typeID()
             << " obstime: " << data.obstime()
             << " paramid: " << data.paramID()
             << " original: " << data.original());
 
-	  return true;
+	  return false;
   }
 
-  return false;
+  return true;
 }
 
 
