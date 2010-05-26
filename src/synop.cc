@@ -353,7 +353,12 @@ doSynop(int           synopno,
       	}
     }
 
-  
+
+    //Sjekk kodene i 555 (National seksjon)
+    Sjekk_kode( verTilleggKode );
+    Sjekk_kode( maxVindMaxKode );
+    Sjekk_kode( maxMinKode );
+    Sjekk_kode( gressTemp );
     /**
      * Changed the wind unit from knop to m/s
      * 
@@ -1712,6 +1717,38 @@ Synop::Sjekk_Gruppe(int grpNr, std::string &kode, const std::string &str)
   
   	//std::cerr <<  "Sjekk_Gruppe (ut): " << kode << "\n";  
   	return true;
+
+} /* Sjekk_Gruppe */
+
+bool
+Synop::Sjekk_kode( std::string &kode )
+{
+   int i = 0;
+
+   if( ! (kode.size() == 4 || kode.size() == 5 || kode.size() == 11) ) {
+      kode.erase();
+      return false;
+   }
+
+   if( kode.size() == 5 || kode.size() == 11 )
+      i = 1;
+
+   string tmp = kode.substr( i, 4 );
+
+   if( tmp =="////"){
+      kode="";
+      return false;
+   }else{
+      while( i < tmp.size() ){
+         if(!isdigit( tmp[i] ) && tmp[i] != '/'){
+            kode="";
+            return false;
+         }
+         i++;
+      }
+   }
+
+   return true;
 
 } /* Sjekk_Gruppe */
 

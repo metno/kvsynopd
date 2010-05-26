@@ -69,6 +69,7 @@ class Synop
 
     int  Vis_ir_Kode(const std::string &str);
     bool Sjekk_Gruppe(int grpNr, std::string &kode, const std::string &str);
+    bool Sjekk_kode( std::string &kode );
     void Tid_Kode(std::string &kode, int time);
     void Naa_Vind_Kode(std::string &kode, float retn, float hast);
     void Temp_Kode(std::string &kode, float temp);
