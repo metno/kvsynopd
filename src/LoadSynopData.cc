@@ -86,8 +86,8 @@ loadSynopData(const DataEntryList &dl,
 			}
 		}
 
-	    if(!synopData.undef()){
-	    	synopData.cleanUpSlash();
+		if( !synopData.undef() && synopData.nSet>0 ){
+		   synopData.cleanUpSlash();
 
 	    	try{
 	    		sd[synopData.time()]=synopData;
@@ -98,7 +98,7 @@ loadSynopData(const DataEntryList &dl,
 	    	catch(...){
 	    		LOGDEBUG("EXCEPTION(Unknown): Should never happend!" << endl);
 	    	}
-	    }
+		}
 	}
 }
 
