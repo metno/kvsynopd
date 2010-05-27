@@ -353,6 +353,16 @@ doSynop(int           synopno,
       	}
     }
 
+    //Sjekk kodene i 333 (Regional seksjon)
+    Sjekk_kode( minMaxKode );
+    Sjekk_kode( nedboerKodeSect3 );
+    Sjekk_kode( maxVindGustKode );
+    Sjekk_kode( snoeMarkKode );
+    Sjekk_kode( rr24Kode );
+    Sjekk_kode( skyerEkstraKode1 );
+    Sjekk_kode( skyerEkstraKode2 );
+    Sjekk_kode( skyerEkstraKode3 );
+    Sjekk_kode( skyerEkstraKode4 );
 
     //Sjekk kodene i 555 (National seksjon)
     Sjekk_kode( verTilleggKode );

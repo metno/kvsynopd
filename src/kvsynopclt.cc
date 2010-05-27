@@ -160,13 +160,13 @@ main(int argn, char **argv)
              continue;
           }
 	
-          CERR("Created synop for <" << d.stationid << "> termin: " << d.termin
+          COUT("Created synop for <" << d.stationid << "> termin: " << d.termin
                << endl << "Message: " << d.message << endl << "Synop: " << endl
                << d.synop << endl << endl);
        }
     }
   }else if(opt.cmd==Options::Reload){
-    CERR("OPTION: Reload!" << endl);
+    COUT("OPTION: Reload!" << endl);
     app.reloadConf();
   }else if(opt.cmd==Options::CacheReload){
     string msg;
