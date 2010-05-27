@@ -1723,17 +1723,23 @@ Synop::Sjekk_Gruppe(int grpNr, std::string &kode, const std::string &str)
 bool
 Synop::Sjekk_kode( std::string &kode )
 {
-   int i = 0;
+   string tmp( kode );
+   string::size_type i = 0;
 
-   if( ! (kode.size() == 4 || kode.size() == 5 || kode.size() == 11) ) {
+   i = kode.find_first_not_of(" ");
+
+   if( i != string::npos )
+      tmp = kode.substr( i );
+
+   if( ! (tmp.size() == 4 || tmp.size() == 5 || tmp.size() == 11) ) {
       kode.erase();
       return false;
    }
 
-   if( kode.size() == 5 || kode.size() == 11 )
+   if( tmp.size() == 5 || tmp.size() == 11 )
       i = 1;
 
-   string tmp = kode.substr( i, 4 );
+   tmp = tmp.substr( i, 4 );
 
    if( tmp =="////"){
       kode="";
