@@ -587,6 +587,7 @@ SynopWorker::readData(dnmi::db::Connection &con,
   	miutil::miTime                  from(event.obstime());
   	miutil::miTime                  to(event.obstime());
   	bool                            hasObstime=false;
+  	kvdatacheck::Validate validate( kvdatacheck::Validate::UseOnlyUseInfo );
 
   	data.clear();
 
@@ -628,10 +629,12 @@ SynopWorker::readData(dnmi::db::Connection &con,
 				if(event.hasReceivedTypeid(dit->stationID(), 
 				  									dit->typeID(),
 				   								doLogTypeidInfo)){
-	  				data.insert(*dit);
+				   if( validate( *dit ) ) {
+				      data.insert(*dit);
 	  
-	  				if(!hasObstime && dit->obstime()==event.obstime())
-	    				hasObstime=true;
+				      if(!hasObstime && dit->obstime()==event.obstime())
+				         hasObstime=true;
+				   }
 				}
 
 				doLogTypeidInfo=false;
@@ -670,7 +673,7 @@ SynopWorker::loadSynopData(const DataEntryList &dl,
 			   SynopDataList       &sd, 
 			   StationInfoPtr      info)const
 {
-   kvdatacheck::Validate validate( kvdatacheck::Validate::UseOnlyUseInfo );
+   kvdatacheck::Validate validate( kvdatacheck::Validate::NoCheck );
 	::loadSynopData( dl, sd, info, validate );
 }
 
