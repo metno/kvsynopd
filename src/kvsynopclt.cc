@@ -126,31 +126,44 @@ main(int argn, char **argv)
     if(opt.time.undef()){
       CERR("Invalid time <" << opt.time << ">!");
     }else{
-      Options::IIntList it=opt.wmonoList.begin();
-      kvsynopd::SynopData d;
-      TKeyVal keyvals;
-      
-      for(; it!=opt.wmonoList.end(); it++){
-	if(!app.createSynop(*it, opt.time, keyvals, 20, d)){
-	  if(app.shutdown()){
-	    break;
-	  }else{
-	    CERR("Create synop failed!\n");
-	  }
-	continue;
-	}
-	
-	if(!d.isOk){
-	  CERR("Cant create synop for <" << d.stationid << ">!\n"
-	       << "Reason: " << d.message << endl);
-	  continue;
-	}
-	
-	CERR("Created synop for <" << d.stationid << "> termin: " << d.termin
-	     << endl << "Message: " << d.message << endl << "Synop: " << endl
-	     << d.synop << endl << endl);
-      }
+       if( opt.wmonoList.size() == 1 && *opt.wmonoList.begin() == 0 ) {
+          //We shall create synop for all defined stations.
+          opt.wmonoList.clear();
+          kvsynopd::StationInfoList list;
 
+          if( app.stationsList(list) ) {
+
+             for(CORBA::ULong i=0; i<list.length(); i++){
+                opt.wmonoList.push_back( list[i].wmono );
+             }
+          }
+       }
+
+       Options::IIntList it=opt.wmonoList.begin();
+
+       kvsynopd::SynopData d;
+       TKeyVal keyvals;
+      
+       for(; it!=opt.wmonoList.end(); it++){
+          if(!app.createSynop(*it, opt.time, keyvals, 20, d)){
+             if(app.shutdown()){
+                break;
+             }else{
+                CERR("Create synop failed!\n");
+             }
+             continue;
+          }
+	
+          if(!d.isOk){
+             CERR("Cant create synop for <" << d.stationid << ">!\n"
+                  << "Reason: " << d.message << endl);
+             continue;
+          }
+	
+          CERR("Created synop for <" << d.stationid << "> termin: " << d.termin
+               << endl << "Message: " << d.message << endl << "Synop: " << endl
+               << d.synop << endl << endl);
+       }
     }
   }else if(opt.cmd==Options::Reload){
     CERR("OPTION: Reload!" << endl);

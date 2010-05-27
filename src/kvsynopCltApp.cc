@@ -66,7 +66,7 @@ SynopCltApp::SynopCltApp(int argn, char **argv, miutil::conf::ConfSection *conf 
   spin.tv_nsec=10000000;
 
   if(!getOptions(argn, argv, conf, opt)){
-    cerr << "Inavlid or missing option!";
+    cerr << "Invalid or missing option!";
     use(1);
   }
 
@@ -517,7 +517,13 @@ SynopCltApp::getOptions(int argn, char **argv, miutil::conf::ConfSection *conf, 
 	if(optind<argn){
 		while(optind<argn){
 			sWmo=argv[optind++];
-      
+
+			if( sWmo == "all" ) {
+			   opt.wmonoList.clear();
+			   opt.wmonoList.push_back( 0 );
+			   break;
+			}
+
 			for(std::string::size_type i=0; i<sWmo.length(); i++){
 				if(!isdigit(sWmo[i])){
 					return false;
@@ -574,14 +580,16 @@ use(int exitcode)
        << "     --delay-list:  list the stations in the dely que.\n"
        << "     --uptime: returns when kvsynopd was started.\n"
        << "     --help: print this help screen!\n"
-       << "     --synop [OPTIONS] wmono wmono .... wmono\n\n"
+       << "     --synop [OPTIONS] (all | wmono wmono .... wmono)\n\n"
        << "       OPTIONS\n\n"
        << "       -t 'YYYY-MM-DD HH': Create the synop for this time.\n\n"
        << "       wmono: wmo number of the station we shall generate a synop\n"
        << "              for. There can be multiple wmono's.\n"
+       << "              If 'all' is specified a synop for all defined stations\n"
+       << "              is generated.\n"
        << "     --reload: Update the station configrations from the\n"
-       << "               configuration file."
-       << "     --cachereload: list all stations marked for reload."
+       << "               configuration file.\n"
+       << "     --cachereload: list all stations marked for reload.\n"
        << "\n\n";
   exit(exitcode);
 }
