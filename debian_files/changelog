@@ -1,3 +1,16 @@
+kvsynopd (2.1.2-1) unstable; urgency=low
+  * Fix generation of empty synop.
+  * Fix validate error. Use useinfo(1) and controlinfo( fmis ).
+  * #1254. Do a better check of the wind values.
+
+ -- Kvalobs <kvalobs@met.no>  Thu, 27 May 2010 14:00:00 +0200
+        
+kvsynopd (2.1.1-1) unstable; urgency=low
+
+  * Fix validate error. Must check original for -32767 and useinfo(2) is valid for values <=2.
+
+ -- Kvalobs <kvalobs@met.no>  Tue, 25 May 2010 13:40:00 +0200
+
 kvsynopd (2.1.0-1) unstable; urgency=low
 
   * Initial release of kvsynopd as a stand alone package.
