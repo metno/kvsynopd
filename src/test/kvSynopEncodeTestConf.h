@@ -32,6 +32,15 @@ const char *testconf =
 "  owner=\"AUTG\"\n"
 "  precipitation=(\"RA\")\n"
 "}\n"
-;
+"\n"
+"wmo_01384{\n"
+"  #Gardermoen\n"
+"  stationid=04780\n"
+"  typepriority=(501)\n"
+"  #precipitation=(\"RA\")\n"
+"  owner=\"AUTG\"\n"
+"}\n"
+"\n";
+
 
 #endif /* KVSYNOPENCODETESTCONF_H_ */

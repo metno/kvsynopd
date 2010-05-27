@@ -301,6 +301,22 @@ TEST_F( SynopEncodeTest, Sjekk_kode )
 
 }
 
+TEST_F( SynopEncodeTest, encode_noData )
+{
+   SynopDataList data;
+   StationInfoPtr stInfo;
+   string synop;
+   kvdatacheck::Validate validData( kvdatacheck::Validate::UseOnlyUseInfo );
+   int wmono=1384;
+   stInfo = findWmoNo( wmono );
+
+
+   ASSERT_TRUE( stInfo ) << "No station information for wmono " << wmono;
+
+   loadSynopDataFromFile( "data_4780-1.dat", stInfo, data, validData );
+
+   EXPECT_TRUE( data.size() == 0 ) << "It is expected that the datalist is empty, but the size is: " << data.size();
+}
 
 int
 main(int argc, char **argv) {
