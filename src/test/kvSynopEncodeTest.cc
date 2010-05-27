@@ -267,7 +267,7 @@ TEST_F( SynopEncodeTest, encode_nddff )
    EXPECT_TRUE( data.firstTime() == dt );
    EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
    miutil::cmprspace( synop, true );
-   EXPECT_EQ( synop, "AAXX 27061 01001 16/// /0000 1//// 2//// 6////=") << "Generated synop 1: " << synop;
+   EXPECT_EQ( synop, "AAXX 27061 01001 16/// /3501 1//// 2//// 6////=") << "Generated synop 1: " << synop;
 
    dt=miTime("2010-02-28 06:00:00");
    data = allData.subData( dt );

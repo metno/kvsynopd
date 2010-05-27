@@ -568,12 +568,13 @@ Synop::Naa_Vind_Kode(std::string &kode, float retn, float hast)
       retn = FLT_MAX;
 
    if( hast != FLT_MAX ) {
+      hast = floor( (double) hast+0.5 );
+
       if( hast < 1.0 ) { //No wind
          kode="0000";
          return;
       }
 
-      hast = floor( (double) hast+0.5 );
       sprintf(tmp,"%02.0f", hast );
       ffCode = tmp;
    }
