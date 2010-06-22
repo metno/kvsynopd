@@ -1,6 +1,7 @@
 kvsynopd (2.1.4-1) unstable; urgency=low
   * Use dewpoint (TD) if defined.
   * Use IIR if defined for computation of irix (in irixhVV) and 6RRRtr.
+  * Added some, incomplete, logic to decide if we hava a new synop when the synop is generated from typeid 1.
   
  -- Kvalobs <kvalobs@met.no>  Tue, 22 Jun 2010 12:18:00 +0200
 

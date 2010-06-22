@@ -99,7 +99,8 @@ SynopData::SynopData():
     skyerEkstra2("////"),
     skyerEkstra3("////"),
     skyerEkstra4("////"),
-    snoeMark("////")
+    snoeMark("////"),
+    onlyDataFromTypeid1( true )
 {
 }
 
@@ -177,7 +178,8 @@ SynopData::SynopData(const SynopData &p):
     AA(p.AA),
     ITZ(p.ITZ),
     IIR(p.IIR),
-    ITR(p.ITR)
+    ITR(p.ITR),
+    onlyDataFromTypeid1( p.onlyDataFromTypeid1 )
   
 {
 }
@@ -260,6 +262,8 @@ SynopData::operator=(const SynopData &p)
     ITZ              =p.ITZ;
     IIR              =p.IIR;
     ITR              =p.ITR;
+    onlyDataFromTypeid1 =p.onlyDataFromTypeid1;
+
     return *this;
 }
 
@@ -298,8 +302,10 @@ SynopData::cleanUpSlash()
 
 
 bool
-SynopData::setData(const int  &param, 
-		   const std::string &data_)
+SynopData::setData( const int  &param,
+		              const std::string &data_,
+		              int typeid_
+                  )
 {
     float       fData;
     int         im;
@@ -317,8 +323,6 @@ SynopData::setData(const int  &param,
 
     im=static_cast<int>(round(fData));
     sprintf(buf, "%d", im);
-
-    nSet++;
 
     switch(param){
     case 211: tempNaa=fData;       break; //TA
@@ -499,10 +503,14 @@ SynopData::setData(const int  &param,
               AA=buf;
 	      break;
     default:
-       nSet--;
       return false;
     }
-    
+
+    nSet++;
+
+    if( typeid_ != 1 )
+       onlyDataFromTypeid1 = false;
+
     return true;
 }
 
@@ -708,6 +716,18 @@ SynopDataList::subData( const miutil::miTime &from, const miutil::miTime &to ) c
       retList.dataList.push_back( *it );
 
    return retList;
+}
+
+bool
+SynopDataList::
+onlyDataFromSynop()const
+{
+   CISynopDataList it=begin();
+
+   if( it == end() )
+      return false;
+
+   return it->onlyDataFromTypeid1;
 }
 
 SynopDataList::SynopDataProxy& 

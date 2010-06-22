@@ -73,7 +73,7 @@ loadSynopData(const DataEntryList &dl,
 
 				if(itd->sensor()==0 && itd->level()==0){
 					if( validate( *itd ) )
-						synopData.setData(itd->paramID(), itd->original());
+						synopData.setData(itd->paramID(), itd->original(), itd->typeID() );
 					else {
 						LOGDEBUG("CheckData: do NOT use: " << itd->obstime() << " " << itd->paramID() << " " << itd->typeID() << " val: "
 								 << itd->original() << " cinfo: " << itd->controlinfo().flagstring() << " uinfo: "

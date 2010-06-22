@@ -331,6 +331,20 @@ hasContinuesTimes(const std::list<int> &ctList, int hours)const
   return n>=hours;
 }
 
+bool
+DataEntryList::
+hasTypeid( int typeid_ )const
+{
+   CITDataEntryList it=dataList.begin();
+
+   if(it==dataList.end())
+     return false;
+
+   DataListEntry::TDataList dl = it->getTypeId( typeid_ );
+
+   return dl.size()>0;
+}
+
 
 std::ostream&
 operator<<( std::ostream& ost,

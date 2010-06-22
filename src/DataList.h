@@ -174,6 +174,8 @@ public:
 	ITDataEntryList  end(){ return dataList.end();}
 	CITDataEntryList end()const { return dataList.end();}
 
+	bool hasTypeid( int typeid_ )const;
+
 	friend std::ostream& operator<<(std::ostream& ost,
 			const DataEntryList& sd);
 };

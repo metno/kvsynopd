@@ -502,6 +502,7 @@ SynopWorker::newObs(ObsEvent &event)
     	bool                  newSynop=true;
     	bool                  bccx=false;
     	string                mySynop;
+    	bool                  fromSynop = data.hasTypeid( 1 );
 
     	crcChecker.process_bytes(sSynop.c_str(), sSynop.length());
     	crc=crcChecker.checksum();
@@ -520,6 +521,19 @@ SynopWorker::newObs(ObsEvent &event)
 	  				newSynop=false;
 				}
       	}
+    	}
+
+    	//This is a hack. If we create a synop from data
+    	//that is comming in from a synop we most probably
+    	//want to send out a CCA. If the CCX from the synop was saved in the
+    	//database we could have used that to compute the new CCX value.
+
+    	if( ccx == 0 && fromSynop ) {
+    	   if( synopData.onlyDataFromSynop() ) {
+    	      newSynop = false;
+    	   } else {
+    	      ccx++;
+    	   }
     	}
 
     	Synop::replaceCCCXXX(sSynop, ccx);

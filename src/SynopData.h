@@ -115,14 +115,16 @@ class  SynopData
   	std::string ITZ;
   	std::string IIR; //nedb�r indikator
   	std::string ITR;
+  	bool onlyDataFromTypeid1; //Only data from synop.
 
   	SynopData();
   	SynopData(const SynopData &p);
   	SynopData& operator=(const SynopData &p);
   	~SynopData();
 
-  	bool setData(const int  &param, 
-				 const std::string &data_);
+  	bool setData( const int  &param,
+  	              const std::string &data_,
+  	              int typeid_ );
 
   	/**
   	 * Removes data that only generates groups with slashes.
@@ -241,6 +243,8 @@ public:
   	CISynopDataList end()const { return dataList.end();}
 
   	SynopDataList subData( const miutil::miTime &from, const miutil::miTime &to=miutil::miTime() ) const;
+
+  	bool onlyDataFromSynop()const;
 
   	friend std::ostream& operator<<(std::ostream& ost,
 				 					  const SynopDataList& sd);
