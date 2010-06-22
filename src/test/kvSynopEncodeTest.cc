@@ -318,6 +318,29 @@ TEST_F( SynopEncodeTest, encode_noData )
    EXPECT_TRUE( data.size() == 0 ) << "It is expected that the datalist is empty, but the size is: " << data.size();
 }
 
+TEST_F(SynopEncodeTest, synop_to_synop )
+{
+   using namespace miutil;
+   SynopDataList data;
+   SynopDataList allData;
+   StationInfoPtr stInfo;
+   string synop;
+   miTime dt;
+   kvdatacheck::Validate validData( kvdatacheck::Validate::UseOnlyUseInfo );
+   int wmono=89504;
+   stInfo = findWmoNo( wmono );
+
+
+   loadSynopDataFromFile( "data_99990.dat", stInfo, allData, validData );
+
+   dt=miTime("2010-06-22 06:00:00");
+   data = allData.subData( dt );
+   EXPECT_TRUE( data.firstTime() == dt );
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
+   miutil::cmprspace( synop, true );
+   EXPECT_EQ( synop, "AAXX 22061 89504 43/// /0203 11211 21400 38316 49857 55004 333 21340=") << "Generated synop 1: " << synop;
+}
+
 int
 main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

@@ -72,6 +72,7 @@ SynopData::SynopData():
     trykkQNHNaa(FLT_MAX),
     trykkQFFNaa(FLT_MAX),
     trykkTendens(FLT_MAX), 
+    TD( FLT_MAX ),
     TAN_12(FLT_MAX),
     TAX_12(FLT_MAX),
     TW(FLT_MAX),
@@ -141,6 +142,7 @@ SynopData::SynopData(const SynopData &p):
     trykkQNHNaa(p.trykkQNHNaa),
     trykkQFFNaa(p.trykkQFFNaa),
     trykkTendens(p.trykkTendens),
+    TD( p.TD ),
     TAN_12(p.TAN_12),
     TAX_12(p.TAX_12),
     TW(p.TW),
@@ -222,6 +224,7 @@ SynopData::operator=(const SynopData &p)
     trykkQNHNaa      =p.trykkQNHNaa;
     trykkQFFNaa      =p.trykkQFFNaa;
     trykkTendens     =p.trykkTendens;
+    TD               =p.TD;
     TAN_12           =p.TAN_12;
     TAX_12           =p.TAX_12;
     TW               =p.TW;
@@ -353,6 +356,7 @@ SynopData::setData(const int  &param,
     case 177: trykkTendens=fData;  break; //PP
     case 214: TAN_12=fData;        break; //TAN_12
     case 216: TAX_12=fData;        break; //TAX_12
+    case 217: TD=fData;            break; //TD, duggpunktstemperatur.
     case 242: TW=fData;            break; //TW
     case 244: TWN=fData;           break; //TWN
     case 243: TWM=fData;           break; //TWM

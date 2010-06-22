@@ -79,6 +79,7 @@ class  SynopData
   	float  trykkQNHNaa;  //PH, trykk redusert til havets niv�, ICAO standard.   
   	float  trykkQFFNaa;  //PR, trykk redusert til havets niv�.
   	float  trykkTendens;  
+  	float  TD;           //Dugpunkts temperatur
   	float  TAN_12;
   	float  TAX_12;
   	float  TW;

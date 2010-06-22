@@ -116,7 +116,7 @@ class Synop
 			 SynopDataList &sd);
     int RR_24_from_RR_N(SynopDataList &sd, float &fRR24);
  	 
-    void Dugg_Kode(std::string &kode, float temp, float fukt);
+    void Dugg_Kode(std::string &kode, const SynopData &data );
     void Min_Max_Kode(std::string &kode, SynopDataList &sd);
     void Max_Min_Kode(std::string &kode, SynopDataList &sd);
     void Max_Vind_Gust_Kode(std::string &kode, SynopDataList &sd);

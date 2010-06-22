@@ -272,7 +272,7 @@ doSynop(int           synopno,
     Temp_Kode(luftTempKode, sisteTid.tempNaa);
 
     /* Reknar ut duggtemp. vha. lufttemp. og fuktigheit */
-    Dugg_Kode(duggTempKode, sisteTid.tempNaa, sisteTid.fuktNaa);
+    Dugg_Kode(duggTempKode, sisteTid );
  
     /* Reknar ut nattens min.temp ELLER dagens max.temp  */
     Min_Max_Kode(minMaxKode, synopData);
@@ -342,16 +342,26 @@ doSynop(int           synopno,
 			synop+=" CCCXXX";
     }
 
+    //cerr << " hour: " << sisteTid.time().hour() << " ITR: " << ITR << " RRRtr: [" << RRRtr << "]" << endl;
+
     if(ir==1){
-      	if(!(sisteTid.time().hour()%6) && ITR>=1 && ITR<=4)
-			nedboerKodeSect1=RRRtr;
-      	else if(RRRtr.find("////")!=string::npos)
-			ir=4;
-      	else{
-			ir=2;
-			nedboerKodeSect3=RRRtr;
-      	}
+       if( !sisteTid.IIR.empty() ) {
+          int irTmp = sisteTid.IIR[0] - '0';
+          if( irTmp >= 0 && irTmp <= 4 )
+             ir = irTmp;
+       }
+
+       if(!(sisteTid.time().hour()%6) && ITR>=1 && ITR<=4)
+          nedboerKodeSect1=RRRtr;
+       else if(RRRtr.find("////")!=string::npos)
+          ir=4;
+       else{
+          ir=2;
+          nedboerKodeSect3=RRRtr;
+       }
     }
+
+    //cerr << " nedboerKodeSect1: [" << RRRtr << "] nedboerKodeSect3: [" << RRRtr << "]" << endl;
 
     //Sjekk kodene i 333 (Regional seksjon)
     Sjekk_kode( minMaxKode );
@@ -705,7 +715,7 @@ Synop::Temp_Kode(std::string &kode, float temp)
  *  
  */
 void 
-Synop::Dugg_Kode(std::string &kode, float temp, float fukt)
+Synop::Dugg_Kode(std::string &kode, const SynopData &data )
 {
 	char stmp[30];
    int index;
@@ -725,49 +735,59 @@ Synop::Dugg_Kode(std::string &kode, float temp, float fukt)
    float td;
    std::string str;
 
-   index = 0;
+   float temp = data.tempNaa;
+   float fukt = data.fuktNaa;
 
-   if(fukt==FLT_MAX || temp==FLT_MAX){
-     	kode=" 2////";
-     	return;
+   if( data.TD != FLT_MAX ) {
+      td = data.TD;
+
+      if( temp != FLT_MAX && td>temp )
+         td = temp;
+   } else {
+      index = 0;
+
+      if(fukt==FLT_MAX || temp==FLT_MAX){
+         kode=" 2////";
+         return;
+      }
+
+
+      LOGDEBUG("duggtemp: UU=" << fukt << "  TA=" << temp);
+
+      if(fukt>100.0){
+         LOGDEBUG("duggtemp: fukt(" << fukt << ")>100");
+
+         if(fukt<=104){
+            Temp_Kode(str, temp);
+            sprintf(stmp, " 2%s", str.c_str());
+            kode=stmp;
+         }else{
+            kode=" 2////";
+         }
+         return;
+      }
+
+      if(temp>0.0)
+         index = 6;
+
+      /* Saturation vapor pressure */
+      SVP =  CK[index]*exp(CK[index+1]*temp/(CK[index+2]+temp));
+
+      /* Actual vapor pressure */
+      VP = fukt*SVP/100;
+
+      /* Dewpoint temperature */
+      Q1 = log(VP/CK[index]);
+      td = CK[index+2]*Q1/(CK[index+1]-Q1);
+
+      LOGDEBUG("duggtemp: " << endl     <<
+               "-- SVP=" << SVP << endl <<
+               "--  VP=" <<  VP << endl <<
+               "--  Q1=" <<  Q1 << endl <<
+               "--  TD=" <<  td);
    }
 
-   
-   LOGDEBUG("duggtemp: UU=" << fukt << "  TA=" << temp);
-
-  	if(fukt>100.0){
-   	LOGDEBUG("duggtemp: fukt(" << fukt << ")>100");
-     
-		if(fukt<=104){
-	    	Temp_Kode(str, temp);
-	    	sprintf(stmp, " 2%s", str.c_str());
-	    	kode=stmp;
-		}else{
-	  		kode=" 2////";
-		}
-		return;
-	}
-
-   if(temp>0.0)
-     	index = 6;
-    
-	/* Saturation vapor pressure */
-   SVP =  CK[index]*exp(CK[index+1]*temp/(CK[index+2]+temp));
-       
-   /* Actual vapor pressure */
-   VP = fukt*SVP/100;
-    
-   /* Dewpoint temperature */
-   Q1 = log(VP/CK[index]);
-   td = CK[index+2]*Q1/(CK[index+1]-Q1);
-
-   LOGDEBUG("duggtemp: " << endl     <<
-	  	 	 	"-- SVP=" << SVP << endl <<
-	  	 	 	"--  VP=" <<  VP << endl <<
-	  	 	 	"--  Q1=" <<  Q1 << endl <<
-	  	 	 	"--  TD=" <<  td);
-
- 	if(td>temp){
+   if(td>temp){
    	if(td<(temp+0.5)){
    		td=temp; 
    	}else{
@@ -2358,7 +2378,8 @@ Synop::nedborFromRRRtr(float &nedbor,
     	}
   	}
 
-   //cerr << "sd[0].ITR: [" << (sd[0].ITR[0]-'0') << "]" << endl;
+   //cerr << "sd[0].ITR: [" << sd[0].ITR << "] sd[0].IIR: [" << sd[0].IIR << "]" << endl;
+
 
   	if(sd[0].ITR.empty()){
   		if(sd[0].IIR.empty() || sd[0].IIR[0]!='3')

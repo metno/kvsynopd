@@ -40,6 +40,15 @@ const char *testconf =
 "  #precipitation=(\"RA\")\n"
 "  owner=\"AUTG\"\n"
 "}\n"
+"\n"
+"wmo_89504{\n"
+"  #Troll i antarktis\n"
+"  stationid=99990\n"
+"  typepriority=(\"*1\", \"*308\" )\n"
+"  #    delay=(\"SS:02\")\n"
+"  owner=\"AUTG\"\n"
+"  precipitation=(\"RRRtr\")\n"
+"}\n"
 "\n";
 
 
