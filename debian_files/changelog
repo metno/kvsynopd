@@ -1,3 +1,9 @@
+kvsynopd (2.1.4-1) unstable; urgency=low
+  * Use dewpoint (TD) if defined.
+  * Use IIR if defined for computation of irix (in irixhVV) and 6RRRtr.
+  
+ -- Kvalobs <kvalobs@met.no>  Tue, 22 Jun 2010 12:18:00 +0200
+
 kvsynopd (2.1.3-1) unstable; urgency=low
   * Fix problem with only visual data i synop.
   
