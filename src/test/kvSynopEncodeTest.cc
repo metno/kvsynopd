@@ -339,6 +339,15 @@ TEST_F(SynopEncodeTest, synop_to_synop )
    EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
    miutil::cmprspace( synop, true );
    EXPECT_EQ( synop, "AAXX 22061 89504 43/// /0203 11211 21400 38316 49857 55004 333 21340=") << "Generated synop 1: " << synop;
+
+   loadSynopDataFromFile( "data_99990-1.dat", stInfo, allData, validData );
+   dt=miTime("2010-06-25 06:00:00");
+   data = allData.subData( dt );
+   EXPECT_TRUE( data.firstTime() == dt );
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
+   miutil::cmprspace( synop, true );
+   EXPECT_EQ( synop, "AAXX 25061 89504 43/// /1301 11227 21257 38358 49920 53002 333 21282=") << "Generated synop 1: " << synop;
+
 }
 
 int
