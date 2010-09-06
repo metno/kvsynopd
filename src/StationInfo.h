@@ -28,7 +28,7 @@
   with KVALOBS; if not, write to the Free Software Foundation Inc., 
   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-/* $Header: /var/lib/cvs/kvalobs/src/kvsynopd/StationInfo.h,v 1.13.2.8 2007/09/27 09:02:22 paule Exp $ */
+/* $Header: /var/lib/cvs/kvalobs/src/kvbufrd/StationInfo.h,v 1.13.2.8 2007/09/27 09:02:22 paule Exp $ */
 
 #ifndef __StationInfo_h__
 #define __StationInfo_h__
@@ -43,6 +43,7 @@
 #include <puTools/miTime.h>
 
 //#include "StationInfoParse.h"
+
 
 
 class StationInfoParse; 
@@ -65,27 +66,27 @@ class StationInfoParse;
  *                          mm is an minute in the range [0, 59],
  *                          F - force.
  *                 SS:mm  - SS specify that  mm is for all
- *                          synoptimes, ie. 0,3,6,9,12,15,18 og 21
+ *                          bufrtimes, ie. 0,3,6,9,12,15,18 og 21
  *                 HH:mm  - HH specify that mm is for all hours.
- *                 FS:mm  - Force a delay for all synoptimes.
+ *                 FS:mm  - Force a delay for all bufrtimes.
  *                 FH:mm  - Force a delay for all hours.
  *                 fS:mm  - Delay max mm minutes after the first data is 
- *                          received for all synoptimes.
+ *                          received for all bufrtimes.
  *                 fH:mm  - Delay max mm minutes after the first data is
  *                          received for all hours.
- *                 -SS    - Dont generate synop for synoptimes.
- *                 -tt    - Dont generate synop for the hour tt, where
+ *                 -SS    - Dont generate bufr for bufrtimes.
+ *                 -tt    - Dont generate bufr for the hour tt, where
  * 	                        tt is in the range [0,23].
  * 		
  *                 
  *                 ex: delay=("6:10", "SS:03")
  *                     This means that we shall delay with 3 minutes for all 
- *                     synoptimes except for the 6 termin that we shall delay
+ *                     bufrtimes except for the 6 termin that we shall delay
  *                     with 10 minutes.
  *
  *                     delay=("6:10", "SS:03", "HH:01")
  *                     This means that we shall delay all termins with 1 
- *                     minute, except for synoptimes (except the 6 termin 
+ *                     minute, except for bufrtimes (except the 6 termin
  *                     that shal be delayed with 6 minutes) that shall delay
  *                     with  minutes.
  *                          
@@ -107,20 +108,20 @@ class DelayInfo
 {
   	//hour have several value:
   	// [0,23] the termin (hour) to delay.
-  	//  -1 specify only synoptimes ie. 0, 3, 6, 9, 12, 15, 18, 21
+  	//  -1 specify only bufrtimes ie. 0, 3, 6, 9, 12, 15, 18, 21
   	//  -2 specify all hours
   
   	char hour_;  
   	char delay_; //minutes
   	bool force_;
-  	bool *synoptimes_;  //Create synop for this times.
+  	bool *msgtimes_;  //Create bufr for this times.
 
-	void initSynopTimes(){
+	void initMsgTimes(){
 		
-			//std::cerr << "initSynopTimes: " << int(hour_) << std::endl;
-			if(!synoptimes_){
+			//std::cerr << "initBufrTimes: " << int(hour_) << std::endl;
+			if(!msgtimes_){
 				try{
-					synoptimes_=new bool[24];
+					msgtimes_=new bool[24];
 				}
 				catch(...){
 					return;
@@ -128,35 +129,35 @@ class DelayInfo
 			}
 		
 			for(int i=0; i<24; i++)
-				synoptimes_[i]=true;
+				msgtimes_[i]=true;
 	}
 
 public:
   	enum {STIME=-1, HTIME=-2, FSTIME=-3, FHTIME=-3,SKIP_SYNOP=127, UNDEF=-128};
 
   	DelayInfo(int hour=UNDEF)
-    	:hour_(hour), delay_(0), force_(false), synoptimes_(0){
+    	:hour_(hour), delay_(0), force_(false), msgtimes_(0){
     		if(hour==SKIP_SYNOP){
     			//std::cerr << "DelayInfo::CTOR: SKIP_SYNOP!" << std::endl;
-    			initSynopTimes();
+    			initMsgTimes();
     		}
     	}
   	DelayInfo(char hour, char delay, bool force)
-    	: hour_(hour), delay_(delay), force_(force), synoptimes_(0){}
+    	: hour_(hour), delay_(delay), force_(force), msgtimes_(0){}
   	DelayInfo(const DelayInfo &d)
-    	:hour_(d.hour_),delay_(d.delay_),force_(d.force_), synoptimes_(0){
-    		if(d.synoptimes_){
-   				initSynopTimes();
+    	:hour_(d.hour_),delay_(d.delay_),force_(d.force_), msgtimes_(0){
+    		if(d.msgtimes_){
+   				initMsgTimes();
     				    		
-    			if(synoptimes_){	
+    			if(msgtimes_){
     				for(int i=0; i<24; i++)
-    					synoptimes_[i]=d.synoptimes_[i];
+    					msgtimes_[i]=d.msgtimes_[i];
     			}
     		}
     	}
     ~DelayInfo(){
-    	if(synoptimes_)
-    		delete synoptimes_;
+    	if(msgtimes_)
+    		delete msgtimes_;
     }
 
   	DelayInfo& operator=(const DelayInfo &rhs){
@@ -165,17 +166,17 @@ public:
       		delay_=rhs.delay_;
       		force_=rhs.force_;
       
-      		if(rhs.synoptimes_){
-    			if(!synoptimes_)
-    				initSynopTimes();
+      		if(rhs.msgtimes_){
+    			if(!msgtimes_)
+    				initMsgTimes();
     				    		
-    			if(synoptimes_){	
+    			if(msgtimes_){
     				for(int i=0; i<24; i++)
-    					synoptimes_[i]=rhs.synoptimes_[i];
+    					msgtimes_[i]=rhs.msgtimes_[i];
     			}
-    		}else if(synoptimes_){
-    			delete synoptimes_;
-    			synoptimes_=0;
+    		}else if(msgtimes_){
+    			delete msgtimes_;
+    			msgtimes_=0;
       		}
     			
     	}
@@ -200,10 +201,10 @@ public:
 	     	   delay_==di.delay_ &&
 	     	   force_==di.force_){
 	   
-	   			if(synoptimes_ || di.synoptimes_){
-	   				if(synoptimes_ && di.synoptimes_){
+	   			if(msgtimes_ || di.msgtimes_){
+	   				if(msgtimes_ && di.msgtimes_){
 	     	   			for(int i=0; i<24; i++){
-    						if(synoptimes_[i]!=di.synoptimes_[i])
+    						if(msgtimes_[i]!=di.msgtimes_[i])
     							return false;
 	     	   			}
 	   				}else{
@@ -217,30 +218,30 @@ public:
 	    	}
   	}
 
-	bool skipSynopSpec()const{ return synoptimes_!=0;}
+	bool skipMsgSpec()const{ return msgtimes_!=0;}
   	bool undef()const { return hour_==UNDEF;}
   	int  hour()const{ return static_cast<int>(hour_); }
   	int  delay()const{ return static_cast<int>(delay_);}
   	bool force()const{ return force_;}
   
-  	//Shall we generate synop for this hour
-  	bool synopForThisHour(int hour)const{
-			if(!synoptimes_)
+  	//Shall we generate bufr for this hour
+  	bool msgForThisHour(int hour)const{
+			if(!msgtimes_)
 				return true;
 
   			if(hour<0 || hour>23)
   				return false;
   		
-  			return synoptimes_[hour];
+  			return msgtimes_[hour];
   	}
   
-  	void synopForThisHour(int hour, bool flag){
+  	void msgForThisHour(int hour, bool flag){
   		//Must be a SKIP_SYNOP spec.
-  		if(synoptimes_){
+  		if(msgtimes_){
   			if(hour<0 || hour>23)
   				return;
   				  			
-  			synoptimes_[hour]=flag;
+  			msgtimes_[hour]=flag;
   		}
   	}
   	
@@ -347,36 +348,48 @@ class StationInfo
   
  private:
   friend class StationInfoParse;
+  friend class ConfMaker;
 
   StationInfo& operator=(const StationInfo &);
-  
+  int            height_;
+  int            heightVisability_;
+  int            heightTemperature_;
+  int            heightPressure_;
+  int            heightPrecip_;
+  int            heightWind_;
+  float          latitude_;
+  float          longitude_;
   int            wmono_;
+  std::string    name_;
   TLongList      stationid_;
   TTypeList      typepriority_;
-//  TLongList      mustHaveTypes_;
   TStringList    precipitation_;
   TDelayList     delayList_;
   std::string    list_;
+  bool           copyIsSet_;
   bool           copy_;
   std::string    copyto_;
   std::string    owner_;
   miutil::miTime delayUntil_;
-  //  bool           delayLogic_;
   static std::string  debugdir_;
   milog::LogLevel loglevel_;  
   bool            cacheReloaded48_;
   
-  //  std::string    errorMsg;
 
   StationInfo();
 
  public:
+  StationInfo( int wmono );
   StationInfo(const StationInfo &);
 
   ~StationInfo();
   
+  std::string delayConf; //Holds the configuration line for the delay from the configuration file.
+                         //This information is hard to reconstruct from the delayInfo.
+
   std::string    list()const   { return list_; }
   void           list(const std::string &l){ list_=l;}
+  bool           isCopySetInConfSection() const { return copyIsSet_; }
   bool           copy()const   { return copy_; }
   void           copy(bool c)  { copy_=c;}
   std::string    copyto()const { return copyto_; }
@@ -386,7 +399,22 @@ class StationInfo
   milog::LogLevel loglevel()const { return loglevel_;}
 
 
+  int       height()const{ return height_; }
+  int       heightAdd( int ammount )const;
+  void      height( int h, bool ifUnset = true );
+  int       heightVisability() const;
+  int       heightTemperature()const;
+  int       heightPressure() const;
+  int       heightPrecip()const;
+  int       heightWind()const;
+  float     latitude()const { return latitude_; }
+  void      latitude( float lat, bool ifUnset=true );
+  float     longitude()const { return longitude_; }
+  void      longitude( float lon, bool ifUnset=true );
   int       wmono()const{ return wmono_;}
+  std::string name()const{ return name_; }
+  void      name( const std::string &n, bool ifUnset=true );
+
   TLongList stationID()const { return stationid_;}
   bool      hasStationId(long stid)const;
 
@@ -430,6 +458,8 @@ class StationInfo
    */
   TLongList mustHaveTypes(int hour=-1)const;
 
+  bool mustHaveType( int typeid_, int hour=-1 )const;
+
 
   /**
    * \brief Do we have typeID in the list of typeriority_.
@@ -467,19 +497,19 @@ class StationInfo
    *        data that is required.
    * \param relativToFirst[out] Is set to true on return if the delay
    *                            shall be relativ to the first typeid received
-   *                            data for for a given synop time.
+   *                            data for for a given bufr time.
    * \return True if we shall delay and false otherwise.
    */
   bool delay(int hour, int &minute, bool &force, bool &relativToFirst)const;
   
-  bool synopForTime(int hh)const;
+  bool msgForTime(int hh)const;
 
   friend std::ostream& operator<<(std::ostream& ost,
 				  const StationInfo& sd);
 
   std::string keyToString(const std::string &key);
 
-
+  bool makeConfSection( std::string &confSection )const;
   /**
    * \brief Compare two StationInfo to se if they has the same 
    *  configuration data.
@@ -496,6 +526,7 @@ class StationInfo
 };
 
 typedef boost::shared_ptr<StationInfo> StationInfoPtr;
+typedef std::list<StationInfoPtr> StationList;
 
 std::ostream& operator<<(std::ostream& ost,
 			 const StationInfo& sd);
@@ -505,4 +536,33 @@ std::ostream& operator<<(std::ostream& ost,
 
 std::ostream& operator<<(std::ostream& ost,
 								  const StationInfo::Type& sd);
+
+
+class StationInfoCompare
+{
+
+   StationList removedStations_;
+   StationList newStations_;
+   StationList changedStations_;
+
+   StationInfoCompare( const StationList &removedStations,
+                       const StationList &newStations,
+                       const StationList &changedStations );
+public:
+
+   StationInfoCompare();
+   StationInfoCompare( const StationInfoCompare &s );
+   StationInfoCompare& operator=( const StationInfoCompare &rhs );
+
+   static StationInfoPtr findStation( const StationList &stationList, StationInfoPtr station );
+   static StationInfoCompare compare( const StationList &oldConf, const StationList &newConf );
+
+   StationList removedStations()const { return removedStations_; }
+   StationList newStations()const { return newStations_; }
+   StationList changedStations()const { return changedStations_; }
+
+   bool isConfChanged()const { return ! removedStations_.empty() || ! newStations_.empty() || ! changedStations_.empty(); }
+
+};
+
 #endif

@@ -28,27 +28,84 @@
   with KVALOBS; if not, write to the Free Software Foundation Inc., 
   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+#include <float.h>
+#include <limits.h>
 #include "StationInfo.h"
 
 using namespace std;
 
+namespace {
+   std::string printOut( int i )
+   {
+      if( i == INT_MAX  || i == INT_MIN  )
+         return "";
+
+      std::ostringstream o;
+      o << i;
+      return o.str();
+   }
+
+   std::string printOut( float i )
+   {
+      if( i == FLT_MAX || i == FLT_MIN )
+         return "";
+
+      std::ostringstream o;
+      o << i;
+      return o.str();
+   }
+}
+
+
 StationInfo::
 StationInfo():
+   height_( INT_MAX ),
+   heightVisability_( INT_MAX ),
+   heightTemperature_( INT_MAX ),
+   heightPressure_( INT_MAX ),
+   heightPrecip_( INT_MAX ),
+   heightWind_( INT_MAX ),
+   latitude_( FLT_MAX ),
+   longitude_( FLT_MAX ),
   	wmono_(-1),
+  	copyIsSet_( false ),
   	cacheReloaded48_(true)
 {
 }
-
+StationInfo::
+StationInfo( int wmono ):
+   height_( INT_MAX ),
+   heightVisability_( INT_MAX ),
+   heightTemperature_( INT_MAX ),
+   heightPressure_( INT_MAX ),
+   heightPrecip_( INT_MAX ),
+   heightWind_( INT_MAX ),
+   latitude_( FLT_MAX ),
+   longitude_( FLT_MAX ),
+   wmono_( wmono ),
+   copyIsSet_( false ),
+   cacheReloaded48_(true)
+{
+}
 StationInfo::
 StationInfo(const StationInfo &i)
 {
-  	wmono_=i.wmono_;
+   height_ = i.height_;
+   heightVisability_ = i.heightVisability_;
+   heightTemperature_ = i.heightTemperature_;
+   heightPressure_ = i.heightPressure_;
+   heightPrecip_ = i.heightPrecip_;
+   heightWind_ = i.heightWind_;
+   latitude_ = i.latitude_;
+   longitude_ = i.longitude_;
+   wmono_=i.wmono_;
+   name_ = i.name_;
   	stationid_=i.stationid_;
   	typepriority_=i.typepriority_;
-//  	mustHaveTypes_=i.mustHaveTypes_;
   	precipitation_=i.precipitation_;
   	delayList_=i.delayList_;
   	list_=i.list_;
+  	copyIsSet_ = i.copyIsSet_;
   	copy_=i.copy_;
   	copyto_=i.copyto_;
   	owner_=i.owner_;
@@ -59,6 +116,100 @@ StationInfo(const StationInfo &i)
 StationInfo::
 ~StationInfo()
 {
+}
+
+void
+StationInfo::
+height( int h, bool ifUnset )
+{
+   if( !ifUnset || height_ == INT_MAX )
+      height_ = h;
+}
+
+int
+StationInfo::
+heightAdd( int ammount )const
+{
+   if( height_ != INT_MAX )
+       return height_ + ammount;
+
+   return height_;
+}
+
+
+int
+StationInfo::
+heightVisability() const
+{
+   if( heightVisability_ != INT_MAX )
+      return heightVisability_;
+
+   //Average height of male norwegians military recruits was 179.9 cm in 2006. ssb.no
+   return 1.8;
+}
+
+int
+StationInfo::
+heightTemperature()const
+{
+   if( heightTemperature_ != INT_MAX )
+      return  heightTemperature_;
+
+
+   return 2;
+}
+
+int
+StationInfo::
+heightPressure() const
+{
+   if( heightPressure_ != INT_MAX )
+      return heightPressure_;
+
+   return heightAdd( 2 );
+}
+
+int
+StationInfo::
+heightPrecip()const
+{
+   if( heightPrecip_ != INT_MAX )
+      return heightPrecip_;
+
+   return 2;
+}
+
+int
+StationInfo::
+heightWind()const
+{
+   if( heightWind_ != INT_MAX )
+      return heightWind_;
+
+   return 10;
+}
+void
+StationInfo::
+latitude( float lat, bool ifUnset )
+{
+   if( !ifUnset || latitude_ == FLT_MAX )
+      latitude_ = lat;
+}
+
+void
+StationInfo::
+longitude( float lon, bool ifUnset )
+{
+   if( !ifUnset || longitude_ == FLT_MAX )
+      longitude_ = lon;
+}
+
+void
+StationInfo::
+name( const std::string &n, bool ifUnset )
+{
+   if( ! ifUnset || name_.empty() )
+      name_ = n;
 }
 
 bool      
@@ -154,7 +305,30 @@ hasTypeId(int typeID, int hour)const
 
 bool 
 StationInfo::
-synopForTime(int hh)const
+mustHaveType( int typeid_, int hour )const
+{
+   TLongList   ret;
+   CITTypeList it=typepriority_.begin();
+
+   //This is an error, we silent ignore it, and returns all typeids.
+   if(hour>23)
+      hour=-1;
+
+   for(;it!=typepriority_.end(); it++) {
+      if( typeid_ == it->typeID() ) {
+         if(it->mustHaveType() && (hour<0 || it->hour(hour)))
+            return true;
+         else
+            return false;
+      }
+   }
+
+   return false;
+}
+
+bool
+StationInfo::
+msgForTime(int hh)const
 {
 	TLongList tp=typepriority(hh);
 	
@@ -165,8 +339,8 @@ synopForTime(int hh)const
 	for(CITDelayList it=delayList_.begin();
 		 it!=delayList_.end(); 
 		 ++it)
-  		if(it->skipSynopSpec())
-  			return it->synopForThisHour(hh);
+  		if(it->skipMsgSpec())
+  			return it->msgForThisHour(hh);
 	
     return true;
 }
@@ -176,7 +350,7 @@ StationInfo::
 delay(int hour, int &minute, 
       bool &force,  bool &relativToFirst)const
 {
-   bool         stime=hour%3==0; //Is it a synop time.
+   bool         stime=hour%3==0; //Is it a bufr time.
    CITDelayList it=delayList_.begin();
 
    relativToFirst=false;
@@ -220,22 +394,28 @@ equalTo(const StationInfo &st)
     	return true;
 
   	if(wmono_==st.wmono_                 &&
+  	   name_ == st.name_                  &&
        stationid_==st.stationid_         &&
        typepriority_==st.typepriority_   &&
- //      mustHaveTypes_==st.mustHaveTypes_ &&
        precipitation_==st.precipitation_ &&
        delayList_==st.delayList_         &&
        list_==st.list_                   &&
        copy_==st.copy_                   &&
        copyto_==st.copyto_               &&
        owner_==st.owner_                 &&
-       loglevel_==st.loglevel_)
+       loglevel_==st.loglevel_           &&
+       heightPrecip_ == st.heightPrecip_ &&
+       heightPressure_ == st.heightPressure_ &&
+       heightTemperature_ == st.heightTemperature_ &&
+       heightVisability_ == st.heightVisability_ &&
+       heightWind_ == st.heightWind_ &&
+       height_ == st.height_ &&
+       latitude_ == st.latitude_ &&
+       longitude_ == st.longitude_ )
      	return true;
   	else
     	return false;
 }
-
-
 
 std::string 
 StationInfo::
@@ -246,6 +426,8 @@ keyToString(const std::string &key)
   	if(key=="wmono"){
     	ost << wmono();
     	return ost.str();
+  	}else  if(key=="name"){
+  	   return name();
   	}else  if(key=="stationid"){
     	bool first=true;
     	for(StationInfo::CITLongList it=stationid_.begin(); 
@@ -332,7 +514,32 @@ keyToString(const std::string &key)
   	}else if(key=="loglevel"){
     	ost << loglevel_;
     	return ost.str();
-  	}
+  	} else if( key == "height" ) {
+  	   ost << height_;
+  	   return ost.str();
+  	} else if( key == "height-visibility" ) {
+      ost << heightVisability();
+      return ost.str();
+   } else if( key == "height-precip" ) {
+      ost << heightPrecip();
+      return ost.str();
+   } else if( key == "height-pressure" ) {
+      ost << heightPressure();
+      return ost.str();
+   } else if( key == "height-temperature" ) {
+      ost << heightTemperature();
+      return ost.str();
+   } else if( key == "height-wind" ) {
+      ost << heightWind();
+      return ost.str();
+   } else if( key == "latitude" ) {
+      ost << latitude_;
+      return ost.str();
+   } else if( key == "longitude" ) {
+      ost << longitude_;
+      return ost.str();
+   }
+
 
 	return string();
 }
@@ -344,6 +551,7 @@ operator<<(std::ostream& ost,
 	   const StationInfo& sd)
 {
   	ost << "StationInfo: " << sd.wmono() << endl;
+  	ost << "           name: " << sd.name() << endl;
   	ost << "      stationid: ";
   
   	for(StationInfo::CITLongList it=sd.stationid_.begin(); 
@@ -387,14 +595,21 @@ operator<<(std::ostream& ost,
     	ost << sd.delayUntil_;
 
   	ost << endl;
-
-  	ost << "           list: " << sd.list_ << endl;
-  	ost << "           copy: " << (sd.copy_?"TRUE":"FALSE") << endl;
-  	ost << "         copyto: " << sd.copyto_ << endl;
-  	ost << "          owner: " << sd.owner_ << endl;
-  	ost << "     delayLogic: " << (!sd.delayList_.empty()?"TRUE":"FALSE") 
+   ost << "           latitude: " << printOut( sd.latitude_) << endl;
+   ost << "          longitude: " << printOut( sd.longitude_ )<< endl;
+  	ost << "             height: " << printOut( sd.height_ ) << endl;
+  	ost << "  height-visibility: " << printOut( sd.heightVisability() ) << endl;
+   ost << "      height-precip: " << printOut( sd.heightPrecip() )<< endl;
+   ost << "    height-pressure: " << printOut( sd.heightPressure() ) << endl;
+   ost << " height-temperature: " << printOut( sd.heightTemperature() )<< endl;
+   ost << "        height-wind: " << printOut( sd.heightWind() ) << endl;
+  	ost << "               list: " << sd.list_ << endl;
+  	ost << "               copy: " << (sd.copy_?"TRUE":"FALSE") << endl;
+  	ost << "             copyto: " << sd.copyto_ << endl;
+  	ost << "              owner: " << sd.owner_ << endl;
+  	ost << "        delayLogic: " << (!sd.delayList_.empty()?"TRUE":"FALSE")
       	<< endl;
-  	ost << "       loglevel: " << sd.loglevel_ << endl;
+  	ost << "           loglevel: " << sd.loglevel_ << endl;
 
   	return ost;
 }
@@ -408,10 +623,10 @@ operator<<(std::ostream& ost,
       return ost;
    }
 
-   if(sd.skipSynopSpec()){
+   if(sd.skipMsgSpec()){
       bool first=true;
       for(int i=0; i<23; i++){
-         if(!sd.synoptimes_[i]){
+         if(!sd.msgtimes_[i]){
             if(first){
                ost << "\"-" << i;
                first=false;
@@ -474,4 +689,86 @@ operator<<(std::ostream& ost, const StationInfo::Type& t)
 	ost << "]";
 	return  ost;
 }
+
+
+StationInfoCompare::
+StationInfoCompare( const StationList &removedStations,
+                    const StationList &newStations,
+                    const StationList &changedStations )
+   : removedStations_( removedStations ),
+     newStations_( newStations ),
+     changedStations_( changedStations )
+{
+}
+
+StationInfoCompare::
+StationInfoCompare()
+{
+}
+
+StationInfoCompare::
+StationInfoCompare( const StationInfoCompare &s )
+   : removedStations_( s.removedStations_ ),
+     newStations_( s.newStations_ ),
+     changedStations_( s.changedStations_ )
+{
+}
+
+
+StationInfoPtr
+StationInfoCompare::
+findStation( const StationList &stationList, StationInfoPtr station )
+{
+   for( StationList::const_iterator it=stationList.begin(); it != stationList.end(); ++it ) {
+      if( (*it)->wmono() == station->wmono() ) {
+         return *it;
+      }
+   }
+
+   return StationInfoPtr();
+}
+
+StationInfoCompare&
+StationInfoCompare::
+operator=( const StationInfoCompare &rhs )
+{
+   if( &rhs != this ) {
+      removedStations_ = rhs.removedStations_;
+      newStations_ = rhs.newStations_;
+      changedStations_ = rhs.changedStations_;
+   }
+
+   return *this;
+}
+
+StationInfoCompare
+StationInfoCompare::
+compare( const StationList &oldConf, const StationList &newConf  )
+{
+   StationList removedStations;
+   StationList newStations;
+   StationList changedStations;
+   StationInfoPtr station;
+
+   //Find all the removed stations.
+   for( StationList::const_iterator it=oldConf.begin(); it != oldConf.end(); ++it ) {
+      station = findStation( newConf, *it );
+
+      if( !station )
+         removedStations.push_back( *it );
+   }
+
+   //Find all the new and changed stations.
+   for( StationList::const_iterator it=newConf.begin(); it != newConf.end(); ++it ) {
+      station = findStation( oldConf, *it );
+
+      if( !station )
+         newStations.push_back( *it );
+      else if( ! station->equalTo( *(*it) ) )
+         changedStations.push_back( *it );
+   }
+
+   return StationInfoCompare( removedStations, newStations, changedStations );
+}
+
 

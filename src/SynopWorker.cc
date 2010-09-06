@@ -322,7 +322,7 @@ SynopWorker::newObs(ObsEvent &event)
 
   	info=event.stationInfo();
   
-  	if(!info->synopForTime(event.obstime().hour())){
+  	if(!info->msgForTime(event.obstime().hour())){
   		LOGINFO("Skip SYNOP for time: " << event.obstime() << "  wmono: " << 
   				  info->wmono());
   		swmsg << "Skip SYNOP for time: " << event.obstime() << "  wmono: " << 
