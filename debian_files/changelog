@@ -1,4 +1,9 @@
 kvsynopd (2.1.4-1) unstable; urgency=low
+  * Use the same configuration parser as kvbufrd. Conf parameters that is not used is ignored.
+  
+ -- Kvalobs <kvalobs@met.no>  Mon, 06 Sep 2010 10:00:00 +0200
+ 
+kvsynopd (2.1.4-1) unstable; urgency=low
   * Use dewpoint (TD) if defined.
   * Use IIR if defined for computation of irix (in irixhVV) and 6RRRtr.
   * Added some, incomplete, logic to decide if we hava a new synop when the synop is generated from typeid 1.
