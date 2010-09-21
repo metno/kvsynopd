@@ -145,7 +145,7 @@ next(kvservice::KvObsDataList &dl)
          app.addObsEvent(event, que);
       }else{
          if(invalidData==it->dataList().size()){
-            LOGDEBUG("Rejected data only!");
+            IDLOGDEBUG("GetData", "Rejected data only!");
             IDLOGDEBUG(logid,"Rejected data only!");
          }
          delete event;
@@ -153,10 +153,10 @@ next(kvservice::KvObsDataList &dl)
    }
 
    if(nObs==0){
-      LOGDEBUG("No data received!");
+      IDLOGDEBUG("GetData", "No data received!");
       IDLOGDEBUG(logid,"No data received!");
    }else{
-      LOGINFO("#" << nObs << " observation proccessed!");
+      IDLOGINFO("GetData", "#" << nObs << " observation proccessed!");
       IDLOGINFO(logid, "#" << nObs << " observation proccessed!");
    }
 

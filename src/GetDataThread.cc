@@ -155,6 +155,9 @@ reloadAll(kvalobs::kvDbGate    &gate,
       GetKvDataReceiver myDataReceiver(app, synopFromTime, que, gate, logid);
 
       if(!app.getKvData(myDataReceiver, which)){
+         IDLOGERROR( "GetData",
+                     "Failed GetData: wmono=" << (*it)->wmono()
+                     << " stationids:" << ost.str() << " FromTime: "  << fromTime);
          IDLOGERROR( logid,
                      "Failed GetData: wmono=" << (*it)->wmono()
                      << " stationids:" << ost.str() << " FromTime: "  << fromTime);
@@ -215,11 +218,17 @@ reloadOne(kvalobs::kvDbGate    &gate,
       IDLOGERROR("GetData",
                  "Failed GetData: wmono=" << (*stationList.begin())->wmono()
                  << " stationids:" << ost.str() << " FromTime: "  << fromTime);
+      IDLOGERROR( logid,
+                  "Failed GetData: wmono=" << (*stationList.begin())->wmono()
+                   << " stationids:" << ost.str() << " FromTime: "  << fromTime);
+   } else {
+      IDLOGINFO( logid,
+                 "Success GetData: wmono=" << (*stationList.begin())->wmono()
+                  << " stationids:" << ost.str() << " FromTime: "  << fromTime);
+      IDLOGINFO( "GetData",
+                 "Success GetData: wmono=" << (*stationList.begin())->wmono()
+                 << " stationids:" << ost.str() << " FromTime: "  << fromTime);
    }
-
-   IDLOGINFO(logid,
-             "Success GetData: wmono=" << (*stationList.begin())->wmono()
-              << " stationids:" << ost.str() << " FromTime: "  << fromTime);
 
    app.cacheReloaded((*stationList.begin())->wmono());
 
