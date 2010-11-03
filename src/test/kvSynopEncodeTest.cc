@@ -350,6 +350,26 @@ TEST_F(SynopEncodeTest, synop_to_synop )
 
 }
 
+TEST_F( SynopEncodeTest, RR_FROM_RA )
+{
+   SynopDataList data;
+   StationInfoPtr stInfo;
+   string synop;
+   kvdatacheck::Validate validData( kvdatacheck::Validate::NoCheck );
+   stInfo = findWmoNo( 1327 );
+
+   ASSERT_TRUE( stInfo );
+
+   loadSynopDataFromFile( "data-50310.dat", stInfo, data, validData );
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
+   miutil::cmprspace( synop, true );
+
+   //cerr << "SYNOP: [" << synop << "]" << endl;
+   EXPECT_EQ( synop, "AAXX 03061 01327 11358 82804 10042 20017 60152 78188 889// 333 20042 70553 91115 555 0/109 10073 455//=");
+
+}
+
+
 int
 main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
