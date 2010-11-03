@@ -204,26 +204,26 @@ doSynop(int           synopno,
     ISynopDataList it=synopData.end();
     it--;
 
-	 {
-     		precipitationParam=NoPrecipitation;
-      	StationInfo::TStringList precip=info->precipitation();
-     
-      	if(precip.size()>0){
-			string rr=*precip.begin();
-	
-			if(rr=="RA"){
-	 			 precipitationParam=PrecipitationRA;
-			}else if(rr=="RR_1" || rr=="RR"){
-	  			precipitationParam=PrecipitationRR;
-			}else if(rr=="RR_3" || rr=="RR_6" 
-		  			 || rr=="RR_12" || rr=="RR_24"){
-	  			precipitationParam=PrecipitationRR_N;
-			}else if( rr=="RRRtr"){
-	  			precipitationParam=PrecipitationRRR;
-			}else if( rr=="RR_01"){
-	  			//NOT implemented (Not needed) yet
-			}
-      	}
+    {
+       precipitationParam=NoPrecipitation;
+       StationInfo::TStringList precip=info->precipitation();
+
+       if(precip.size()>0){
+          string rr=*precip.begin();
+
+          if(rr=="RA"){
+             precipitationParam=PrecipitationRA;
+          }else if(rr=="RR_1" || rr=="RR"){
+             precipitationParam=PrecipitationRR;
+          }else if(rr=="RR_3" || rr=="RR_6"
+                || rr=="RR_12" || rr=="RR_24"){
+             precipitationParam=PrecipitationRR_N;
+          }else if( rr=="RRRtr"){
+             precipitationParam=PrecipitationRRR;
+          }else if( rr=="RR_01"){
+             //NOT implemented (Not needed) yet
+          }
+       }
     }
 
     if(precipitationParam==NoPrecipitation)
@@ -231,7 +231,6 @@ doSynop(int           synopno,
     else
       	ir=1;
 
-  
     LOGDEBUG("nTimeStr (cont): " << nTimeStr << endl <<
 	    	 "Tot times:       " << synopData.size() << endl <<
 	     	 "sisteTid:        " << sisteTid.time() << endl <<
@@ -240,20 +239,20 @@ doSynop(int           synopno,
 	    	 //	     "nedbormen:       " << sisteTid.nedboermengde << endl <<
 		     "verTillegg:      " << sisteTid.verTillegg << endl <<
 		     "nedboerTot (RA): " << sisteTid.nedboerTot);
-    
-  
+
     sprintf(tmp,"%02d%02d",sisteTid.time().day(), sisteTid.time().hour() );
     dato_tid=tmp;
     
     Sjekk_Gruppe(4,verTilleggKode,sisteTid.verTillegg);
     
     if(ir==1){
-      	doNedboerKode(RRRtr,
-				      verTilleggKode,
-		   			  rr24Kode,
-		   			  ITR,
-		    		  synopData);
+       doNedboerKode( RRRtr,
+                      verTilleggKode,
+                      rr24Kode,
+                      ITR,
+                      synopData);
     }
+
 
     LOGDEBUG("Etter doNedboerKode:"
 	    	 << "\n   RRRtr:            " << RRRtr
@@ -345,7 +344,7 @@ doSynop(int           synopno,
     //cerr << " hour: " << sisteTid.time().hour() << " ITR: " << ITR << " RRRtr: [" << RRRtr << "]" << endl;
 
     if(ir==1){
-       if( !sisteTid.IIR.empty() ) {
+       if( !sisteTid.IIR.empty() && precipitationParam==PrecipitationRRR) {
           int irTmp = sisteTid.IIR[0] - '0';
           if( irTmp >= 0 && irTmp <= 4 )
              ir = irTmp;
