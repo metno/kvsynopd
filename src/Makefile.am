@@ -14,7 +14,7 @@ CLEANFILES = $(nodist_idl_sources:.idl=SK.cc) $(nodist_idl_sources:.idl=.hh)
 #	$(IDL) -bcxx -Wbinline -I$(KVIDLDIR) $<
 	$(IDL) -bcxx -I$(KVIDLDIR) $<
 
-noinst_PROGRAMS = kvSynopEncodeTest
+#noinst_PROGRAMS = kvSynopEncodeTest
 
 bin_PROGRAMS = kvsynopd kvsynopclt kvsynopdbclt kvsynopdparse
 
@@ -77,10 +77,13 @@ sqldir=$(datadir)/kvsynopd
 sql_DATA=kvsynopd_schema.sql
 bin_SCRIPTS = kvsynopd_initdb
 
-TESTS=kvSynopEncodeTest
-#noinst_PROGRAMS=kvSynopEncodeTest
+if HAVE_GTEST
+
+
+noinst_PROGRAMS=kvSynopEncodeTest
 
 check_PROGRAMS=kvSynopEncodeTest
+TESTS=$(check_PROGRAMS)
 
 kvSynopEncodeTest_SOURCES = test/kvSynopEncodeTest.cc \
 							test/kvSynopEncodeTestConf.h \
@@ -89,14 +92,17 @@ kvSynopEncodeTest_SOURCES = test/kvSynopEncodeTest.cc \
 							DataList.cc DataList.h \
 		                    SynopData.cc SynopData.h \
 		                    StationInfo.cc StationInfo.h \
-				    StationInfoParse.cc StationInfoParse.h \
+						    StationInfoParse.cc StationInfoParse.h \
 		                    synop.cc synop.h \
 		                    Validate.cc Validate.h \
 		                    InitLogger.cc InitLogger.h \
 		                    LoadSynopData.h LoadSynopData.cc 
 		                    
  
-kvSynopEncodeTest_CPPFLAGS = $(AM_CPPFLAGS) -DTESTDATADIR="\""$(top_srcdir)/src/test"\""
+kvSynopEncodeTest_CPPFLAGS = $(AM_CPPFLAGS) \
+                           -DTESTDATADIR="\""$(top_srcdir)/src/test"\"" \
+                           $(gtest_CFLAGS) 
 
-kvSynopEncodeTest_LDADD = -lgtest \
+kvSynopEncodeTest_LDADD = $(gtest_LIBS) \
 						  $(kvcpp_LIBS)
+endif
