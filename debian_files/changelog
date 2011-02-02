@@ -1,7 +1,7 @@
-kvsynopd (2.2.1-1) unstable; urgency=low
-  * Changed to compile under lucid.
+kvsynopd (2.4.0-1) unstable; urgency=low
+  * Make compile with latest version of kvalobs.
   
- -- Kvalobs <kvalobs@met.no>  Mon, 24 Jan 2011 12:40:00 +0100
+ -- Kvalobs <kvalobs@met.no>  Wed, 02 Feb 2011 10:25:00 +0100
 
 
 kvsynopd (2.2.0-1) unstable; urgency=low
