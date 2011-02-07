@@ -1,3 +1,9 @@
+kvsynopd (2.4.1-1) unstable; urgency=low
+  * Do not use params where useinfo(0)==9.
+  
+ -- Kvalobs <kvalobs@met.no>  Mon, 07 Feb 2011 08:55:00 +0100
+
+
 kvsynopd (2.4.0-1) unstable; urgency=low
   * Make compile with latest version of kvalobs.
   
