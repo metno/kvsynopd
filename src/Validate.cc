@@ -180,6 +180,7 @@ validDataUseOnlyUseInfo( const Data &data )
   kvUseInfo uinfo=data.useinfo();
   kvControlInfo cinfo=data.controlinfo();
 
+  int uinfo_0 = uinfo.flag( 0 );
   int uinfo_2=uinfo.flag( 2 ); // QA level for original data value.
   int uinfo_3=uinfo.flag( 3 ); //Treatment of original data value.
   int cinfo_mis = cinfo.flag( f_fmis );
@@ -190,6 +191,14 @@ validDataUseOnlyUseInfo( const Data &data )
          << " original: " << data.original()
          << " cflags: " << data.controlinfo()
          << " uflags: " << data.useinfo() << " u2: " << uinfo_2 << " u3: " << uinfo_3 << " cmis: "<< cinfo_mis );
+
+  if( uinfo_0 == 9 ){ //Parameter not defined in obs_pgm.
+      IDLOGINFO("uinfo0","REJECTED useinfo(0)=" << uinfo_0 << " :  stationid: " << data.stationID()  << " typeid: " << data.typeID()
+                 << " obstime: " << data.obstime()
+                 << " paramid: " << data.paramID()
+                 << " original: " << data.original());
+      return false;
+  }
 
   if( atoi( data.original().c_str() ) == -32767 ) {
      LOGINFO("REJECTED -32767: stationid: " << data.stationID() << " typeid: " << data.typeID()
