@@ -1,5 +1,11 @@
+kvsynopd (2.4.3~RC1-1) unstable; urgency=low
+  * Do not create hourly precipitation from RA, use RR_1 if available.
+  * Check for RR_12/RR_6 is not greater than RR_24 when precipitation is computed from RA. 
+  
+ -- Kvalobs <kvalobs@met.no>  Mon, 21 Mar 2011 13:00:00 +0100
+
 kvsynopd (2.4.2-1) unstable; urgency=low
-  * Temporary allow "wild obesrevations", ie remove the requirement that useinfo(0)!=9.
+  * Temporary allow "wild obeserevations", ie remove the requirement that useinfo(0)!=9.
   
  -- Kvalobs <kvalobs@met.no>  Tue, 08 Mar 2011 13:00:00 +0100
 
