@@ -89,15 +89,15 @@
  * - Endret kodingen av vind fra knop to m/s.
  * 
  * 2008-01-16 Bxrge
- * - Lagt til støtte for autmatisk målt VV (Vmor).
+ * - Lagt til stï¿½tte for autmatisk mï¿½lt VV (Vmor).
  * 
  * 2008-09-24 Bxrge
  * - Rettet avrundingsfeil i Gust, max vind og E'sss.
  * 2009-02-26 Bxrge
- * - #1241. Rettet feil i generereing av nedbør for en 1 time fra RR_1. 
+ * - #1241. Rettet feil i generereing av nedbï¿½r for en 1 time fra RR_1. 
  *
  * 2009-03-23 Bxrge
- * - #1241. Rettet tr for en 1 times nedbør fra RR_1. 
+ * - #1241. Rettet tr for en 1 times nedbï¿½r fra RR_1. 
  *
  * 2009-03-24 Bxrge
  * - Rettet avrundingsfeil i max vind.
@@ -1641,25 +1641,25 @@ Synop::SjekkEsss(std::string &kode, const std::string &str)
  * EM -> E
  * SA -> sss
  * 
- * Når en værstasjon sender 998 vil de enten også sende E'= 1. (Hvis de har
- * utelatt E' må vi dekode E' til 1 siden 998 er en såpass bevisst handling.)
+ * Nï¿½r en vï¿½rstasjon sender 998 vil de enten ogsï¿½ sende E'= 1. (Hvis de har
+ * utelatt E' mï¿½ vi dekode E' til 1 siden 998 er en sï¿½pass bevisst handling.)
  *
- * Altså, det er E' som bestemmer om SA=-1 er flekkvis snø. I koding av synop
- * må en altså for alle typeid bruke kombinasjonen av SA og E' eller SA og SD 
- * for å kunne angi 998 i synop.
- * SA=-1 når snødybde raporteres som "blank", utelatt (gruppe) eller "0" (Ingen
- * snø)
- * SA=-1 når snødybde raporteres som 998             (flekkvis snø)
- * SA=0  når snødybde raporteres som 997             (mindre enn 0.5 cm snø)
- * SA=-3 når snødybde raporteres som 999             (måling umulig)
- * EM=-1 når EM raporteres som "blank" eller utelatt (gruppe) 
+ * Altsï¿½, det er E' som bestemmer om SA=-1 er flekkvis snï¿½. I koding av synop
+ * mï¿½ en altsï¿½ for alle typeid bruke kombinasjonen av SA og E' eller SA og SD 
+ * for ï¿½ kunne angi 998 i synop.
+ * SA=-1 nï¿½r snï¿½dybde raporteres som "blank", utelatt (gruppe) eller "0" (Ingen
+ * snï¿½)
+ * SA=-1 nï¿½r snï¿½dybde raporteres som 998             (flekkvis snï¿½)
+ * SA=0  nï¿½r snï¿½dybde raporteres som 997             (mindre enn 0.5 cm snï¿½)
+ * SA=-3 nï¿½r snï¿½dybde raporteres som 999             (mï¿½ling umulig)
+ * EM=-1 nï¿½r EM raporteres som "blank" eller utelatt (gruppe) 
  * EM=0  er is-lag
- * EM= 1 - 9 er andel snødekke og type
+ * EM= 1 - 9 er andel snï¿½dekke og type
  *
  * Synop enkoding fra Kvalobs
- * Når det skal lages synop fra kvalobs så må det kanskje ut fra dette til en 
+ * Nï¿½r det skal lages synop fra kvalobs sï¿½ mï¿½ det kanskje ut fra dette til en 
  * justering av dagens enkoder slik at koding av SA og EM blir riktig? (For 302
- * må kun SA benyttes i synop - ikke SD.) 
+ * mï¿½ kun SA benyttes i synop - ikke SD.) 
  * 
  */
 
@@ -2172,6 +2172,21 @@ Synop::nedborFromRA(float &nedbor, float &fRR24, int &tr, SynopDataList &sd)
     	nedbor=FLT_MAX;
     	return 4;
   	}
+
+  	//Do not report 1 hour precipitation from RA.
+  	//Use RR_1 if available, if not do not report precipitation.
+  	if( nTimes == 1 && d1.nedboer1Time != FLT_MAX ) {
+  	   nedbor = d1.nedboer1Time;
+  	} else {
+  	   nedbor = FLT_MAX;
+  	   return 4;
+  	}
+
+
+  	//Do not report a precipitation that is greater than
+  	//the RR24.
+  	if( fRR24 != FLT_MAX && nedbor > fRR24 )
+  	   nedbor = fRR24;
 
   	return 1;
 }
