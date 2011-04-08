@@ -2085,110 +2085,111 @@ Synop::doNedboerKode(std::string &nedboerKode,
 int
 Synop::nedborFromRA(float &nedbor, float &fRR24, int &tr, SynopDataList &sd)
 {
-  	const float limit=0.2;
-  	const float bucketFlush=-10.0;
-  	int   nTimes;
-  	miutil::miTime t=sd.begin()->time();
-  	miutil::miTime t2;
-  	SynopData d1;
-  	SynopData d2;
-  	ISynopDataList it;
+   const float limit=0.2;
+   const float bucketFlush=-10.0;
+   int   nTimes;
+   miutil::miTime t=sd.begin()->time();
+   miutil::miTime t2;
+   SynopData d1;
+   SynopData d2;
+   ISynopDataList it;
 
-  	int   time=t.hour();
+   int   time=t.hour();
 
-  	nedbor=FLT_MAX;
-  	fRR24=FLT_MAX;
+   nedbor=FLT_MAX;
+   fRR24=FLT_MAX;
 
-  	if(time==6 || time==18){
-    	tr=2;
-    	nTimes=12;
-  	}else if(time==0 || time==12){
-    	tr=1;
-    	nTimes=6;
-  	}else{
-    	tr=5;
-    	nTimes=1;
-  	}
+   if(time==6 || time==18){
+      tr=2;
+      nTimes=12;
+   }else if(time==0 || time==12){
+      tr=1;
+      nTimes=6;
+   }else{
+      tr=5;
+      nTimes=1;
+   }
 
-  	d1=*sd.begin();
+   d1=*sd.begin();
 
-  	if(time==6){
-    	//Vi lager en RR_24 verdi til bruk i seksjonen 333 7RR_24
-    	t2=t;
-    	t2.addHour(-24);
-    
-    	it=sd.find(t2);
+   if(time==6){
+      //Vi lager en RR_24 verdi til bruk i seksjonen 333 7RR_24
+      t2=t;
+      t2.addHour(-24);
 
-    	if(it!=sd.end() && it->time()==t2){
-      		d2=*it;
-      
-      		if(d1.nedboerTot!=FLT_MAX && d2.nedboerTot!=FLT_MAX){
-				fRR24=d1.nedboerTot-d2.nedboerTot;
-	
-				if(fRR24>bucketFlush){
-	  				if(fRR24<=limit)
-	    				fRR24=0.0;  //T�rt
-					}else{
-	  					//B�tta er t�mt
-	  					fRR24=FLT_MAX;
-					}
-      		}
-    	}
-  	}
+      it=sd.find(t2);
 
-  	t2=t;
-  	t2.addHour(-1*nTimes);  
+      if(it!=sd.end() && it->time()==t2){
+         d2=*it;
 
-  	it=sd.find(t2);
+         if(d1.nedboerTot!=FLT_MAX && d2.nedboerTot!=FLT_MAX){
+            fRR24=d1.nedboerTot-d2.nedboerTot;
 
-  	if(it==sd.end())
-    	return 4;
+            if(fRR24>bucketFlush){
+               if(fRR24<=limit)
+                  fRR24=0.0;  //Tørt
+            }else{
+               //Bøtta er tømt
+               fRR24=FLT_MAX;
+            }
+         }
+      }
+   }
 
-  	d2=*it;
+   t2=t;
+   t2.addHour(-1*nTimes);
 
-  	if(d2.time()!=t2)
-    	return 4;
+   it=sd.find(t2);
 
+   if(it==sd.end())
+      return 4;
 
-  	if(d1.nedboerTot==FLT_MAX || d2.nedboerTot==FLT_MAX)
-    	return 4;
+   d2=*it;
 
-  	nedbor=d1.nedboerTot-d2.nedboerTot;
-
-  	LOGDEBUG("synopTidspunkt:          " << d1.time() << endl
-			 << "nedbor=" <<  nedbor << endl
-	   		 << " RR_24=" <<  fRR24 << endl
-	   		 << "    RA=" <<  d1.nedboerTot << endl 
-  	   		 << "synopTidspunkt-" << nTimes << " timer : " << d2.time() << endl 
-	   		 << "    RA=" <<  d2.nedboerTot << endl);
-
-  
-  	if(nedbor>bucketFlush){
-    	if(nedbor<=limit){
-      		nedbor=-1.0;
-      		return 3;
-    	}
-  	}else{ //B�tta er t�mt
-    	nedbor=FLT_MAX;
-    	return 4;
-  	}
-
-  	//Do not report 1 hour precipitation from RA.
-  	//Use RR_1 if available, if not do not report precipitation.
-  	if( nTimes == 1 && d1.nedboer1Time != FLT_MAX ) {
-  	   nedbor = d1.nedboer1Time;
-  	} else {
-  	   nedbor = FLT_MAX;
-  	   return 4;
-  	}
+   if(d2.time()!=t2)
+      return 4;
 
 
-  	//Do not report a precipitation that is greater than
-  	//the RR24.
-  	if( fRR24 != FLT_MAX && nedbor > fRR24 )
-  	   nedbor = fRR24;
+   if(d1.nedboerTot==FLT_MAX || d2.nedboerTot==FLT_MAX)
+      return 4;
 
-  	return 1;
+   nedbor=d1.nedboerTot-d2.nedboerTot;
+
+   LOGDEBUG("synopTidspunkt:          " << d1.time() << endl
+            << "nedbor=" <<  nedbor << endl
+            << " RR_24=" <<  fRR24 << endl
+            << "    RA=" <<  d1.nedboerTot << endl
+            << "synopTidspunkt-" << nTimes << " timer : " << d2.time() << endl
+            << "    RA=" <<  d2.nedboerTot << endl);
+
+
+   if( nedbor <= bucketFlush) {//Bøtta er tømt
+      nedbor=FLT_MAX;
+      return 4;
+   }
+
+   //Do not report 1 hour precipitation from RA.
+   //Use RR_1 if available, if not do not report precipitation.
+   if( nTimes == 1 ) {
+      if( d1.nedboer1Time != FLT_MAX ) {
+         nedbor = d1.nedboer1Time;
+      } else {
+         nedbor = FLT_MAX;
+         return 4;
+      }
+   }
+
+   //Do not report a precipitation that is greater than
+   //the RR24.
+   if( fRR24 != FLT_MAX && nedbor > fRR24 )
+      nedbor = fRR24;
+
+   if(nedbor<=limit){
+      nedbor=-1.0;
+      return 3;
+   }
+
+   return 1;
 }
 
 int
