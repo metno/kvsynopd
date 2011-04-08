@@ -1,3 +1,8 @@
+kvsynopd (2.4.3~RC2-1) unstable; urgency=low
+  * Fix bug in RR from RA.
+    
+ -- Kvalobs <kvalobs@met.no>  Fri, 08 Apr 2011 12:30:00 +0100
+
 kvsynopd (2.4.3~RC1-1) unstable; urgency=low
   * Do not create hourly precipitation from RA, use RR_1 if available.
   * Check for RR_12/RR_6 is not greater than RR_24 when precipitation is computed from RA. 
