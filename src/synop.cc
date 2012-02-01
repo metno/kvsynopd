@@ -1673,19 +1673,29 @@ doEsss( std::string &kode, const SynopData &data )
    string em;
    string sa;
    int    iSA;
+   int iE = INT_MAX;
+   int iEm = INT_MAX;
    
    if( data.SA == FLT_MAX )
    	iSA = INT_MAX;
    else
    	iSA = (int) floor((double) data.SA + 0.5 );
    
-   if( data.EM == FLT_MAX && iSA == INT_MAX )
+   if( data.EM == FLT_MAX && iSA == INT_MAX && data.E == FLT_MAX )
       return;
    
-   if( data.EM == FLT_MAX || data.EM < 0 || data.EM > 10 )
+   if( data.E != FLT_MAX ) {
+      iE = (int) floor((double) data.E + 0.5 );
+
+      if( iE >= 10 && iE <20 )
+         iEm = iE - 10;
+   } else if( data.EM == FLT_MAX )
+      iEm = (int) floor((double) data.EM + 0.5 );
+
+   if( iEm == INT_MAX || iEm < 0 || iEm > 10 || iE == 33 )
       em = "/";
    else {
-      sprintf( buf, "%01.0f", data.EM );
+      sprintf( buf, "%01d", iEm );
       em = buf;
    }
    

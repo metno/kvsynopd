@@ -86,6 +86,7 @@ SynopData::SynopData():
     WAWA(FLT_MAX),
     HLN(FLT_MAX),
     EM(FLT_MAX),
+    E(FLT_MAX),
     SA(FLT_MAX),
     Vmor(FLT_MAX),
     VV(FLT_MAX),
@@ -157,6 +158,7 @@ SynopData::SynopData(const SynopData &p):
     WAWA(p.WAWA),
     HLN(p.HLN),
     EM(p.EM),
+    E(p.E),
     SA(p.SA),
     Vmor(p.Vmor),
     VV(p.VV),
@@ -240,6 +242,7 @@ SynopData::operator=(const SynopData &p)
     WAWA             =p.WAWA;
     HLN              =p.HLN;
     EM               =p.EM;
+    E                =p.E;
     SA               =p.SA;
     Vmor             =p.Vmor;
     VV               =p.VV;
@@ -351,6 +354,7 @@ SynopData::setData( const int  &param,
     case 123: nedboerJa=fData;     break; //RT_1
     case 125: nedboer15Time=fData; break; //RR_15
     case 126: nedboer18Time=fData; break; //RR_18
+    case 129: E=fData;             break; //E
     case 173: trykkQFENaa=fData;   break; //PO
     case 174: trykkQFEMid=fData;   break; //POM
     case 175: trykkQFEMin=fData;   break; //PON
