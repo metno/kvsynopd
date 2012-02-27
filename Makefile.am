@@ -4,7 +4,7 @@ sqldir = $(datadir)/kvsynopd
 sql_DATA = cleansynopdb.sql 
 bin_SCRIPTS = kvsynopdbadmin check_kvsynopd.sh
 
-SED_SUBST = sed s,KVCONFIG,$(bindir)/kvconfig,g $< > $@ 
+SED_SUBST = sed s,__KVCONFIG__,$(bindir)/kvconfig,g $< > $@ 
 
 kvsynopdbadmin: kvsynopdbadmin.sh 
 	$(SED_SUBST)
