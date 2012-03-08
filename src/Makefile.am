@@ -41,13 +41,16 @@ kvsynopd_SOURCES = kvsynopd.hh kvsynopdSK.cc \
                    getDataReceiver.cc getDataReceiver.h \
                    GetDataThread.cc GetDataThread.h \
                    kvsynopdImpl.h obsevent.h \
-                   LoadSynopData.h LoadSynopData.cc 
+                   LoadSynopData.h LoadSynopData.cc \
+                   SemiUniqueName.cc SemiUniqueName.h
 
 kvsynopd_CPPFLAGS = $(AM_CPPFLAGS) 
 kvsynopd_LDFLAGS = -pthread -export-dynamic $(BOOST_LDFLAGS)
 
 kvsynopd_LDADD = $(kvcpp_LIBS) $(BOOST_THREAD_LIB) \
+				 $(BOOST_FILESYSTEM_LIB) \
                  -lm         
+                 
 EXTRA_DIST = kvsynopd_schema.sql
  
 kvsynopclt_SOURCES = kvsynopclt.cc \

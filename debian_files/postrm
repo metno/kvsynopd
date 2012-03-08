@@ -37,7 +37,9 @@ DIRS="/usr/share/kvsynopd
       /var/log/kvalobs/kvsynop
       /var/lib/kvalobs/run
       /var/lib/kvalobs/service
-      /var/lib/kvalobs/service/subscribers"     
+      /var/lib/kvalobs/service/subscribers
+      /var/lib/kvsynopd/synop2norcom
+      /var/lib/kvsynopd/synop2norcom/tmp"     
 
 SQLLITE_DB="/var/lib/kvsynopd/kvsynopd.sqlite"
 
@@ -69,9 +71,6 @@ case "$1" in
      
      #Delete my debconf entries in the database.
      db_purge || true
-
-     update-rc.d kvalobs remove || true
-   
      ;;
    
     *)

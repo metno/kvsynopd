@@ -1,3 +1,9 @@
+kvsynopd (2.4.6~rc1-1) unstable; urgency=low
+  * Write synop to a temporary directory and move it (atomic) into
+    the destination directory. 
+
+ -- Kvalobs <kvalobs@met.no>  Thu, 8 Mar 2012 14:00:00 +0100
+
 kvsynopd (2.4.5-1) unstable; urgency=low
   * Add cronjob and fix a bug i kvsynopdbadmin.
 

@@ -125,6 +125,10 @@ class SynopWorker {
   bool checkContinuesTypes(ObsEvent            &event, 
 			   const DataEntryList &data)const;
 
+  std::string
+  filePrefix( StationInfoPtr info,
+              const miutil::miTime &obstime,
+                 int ccx)const;
  public:
   SynopWorker(App &app, 
 	      dnmi::thread::CommandQue &que,

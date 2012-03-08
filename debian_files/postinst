@@ -41,7 +41,9 @@ DIRS="/usr/share/kvsynopd
       /var/log/kvalobs/kvsynop
       /var/lib/kvalobs/run
       /var/lib/kvalobs/service
-      /var/lib/kvalobs/service/subscribers"     
+      /var/lib/kvalobs/service/subscribers
+      /var/lib/kvsynopd/synop2norcom
+      /var/lib/kvsynopd/synop2norcom/tmp"     
 
 SQLLITE_DB="/var/lib/kvsynopd/kvsynopd.sqlite"
 
@@ -101,14 +103,6 @@ case "$1" in
 	  dpkg-statoverride --update --add root $KV_USER 664 $i
       fi 
     done
-
-#    update-rc.d kvalobs defaults    
-    
-#    if which invoke-rc.d >/dev/null 2>&1; then
-#         invoke-rc.d kvalobs start ignore-postgres
-#    else
-#	 /etc/init.d/kvalobs start ignore-postgres
-#    fi
     ;;
 
   abort-upgrade|abort-remove|abort-deconfigure)

@@ -41,10 +41,13 @@
 #include <fstream>
 #include <boost/crc.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include "StationInfo.h"
 #include "SynopWorker.h"
 #include "obsevent.h"
 #include "synop.h"
+#include "SemiUniqueName.h"
 #include <kvalobs/kvPath.h>
 #include "LoadSynopData.h"
 
@@ -53,7 +56,17 @@ using namespace kvalobs;
 using namespace miutil;
 using namespace milog;
 
+namespace fs = boost::filesystem;
 
+namespace {
+
+bool
+isDirWithWritePermission( const std::string &path,
+                          std::string &error );
+std::string
+myStrerror(int errnum );
+
+}
 
 SynopWorker::SynopWorker(App &app_, 
 			 dnmi::thread::CommandQue &que_,
@@ -750,7 +763,27 @@ checkTypes(const DataEntryList  &data,
   	return false;
 }
 
+std::string
+SynopWorker::
+filePrefix(StationInfoPtr info,
+           const miutil::miTime &obstime,
+           int ccx)const
+{
+   ostringstream ost;
 
+   ost << "wmono_" << info->wmono() << "-"
+             << setfill('0') << setw(2) << obstime.day() << setw(2)
+             << obstime.hour();
+   if(ccx>0){
+      char cc = static_cast<char>('A'+(ccx-1));
+      if( ccx > 26 )
+         cc = 'x';
+
+     ost << "-CC" << cc;
+   }
+
+   return ost.str();
+}
 
 void
 SynopWorker::
@@ -759,53 +792,57 @@ saveTo(StationInfoPtr info,
        const std::string &wmomsg,
        int ccx)
 {
-  ostringstream ost;
-  ofstream      f;
-  struct stat   sbuf; 
-  
   if(!info->copy())
     return;
 
-  if(stat(info->copyto().c_str(), &sbuf)<0){
-    if(errno==ENOENT || errno==ENOTDIR){
-      LOGERROR("copyto: <"<<info->copyto()<<"> invalid path!");
-    }else if(errno==EACCES){
-      LOGERROR("copyto: <"<<info->copyto()<<"> permission denied!");
-    }else{
-      LOGERROR("copyto: <"<<info->copyto()<<">, lstat unknown error!");
-    }
-    
-    return;
-  }
+  fs::ofstream      f;
+  string error;
+  string path=info->copyto();
+  string tmppath( path +"/tmp" );
+  string filename( SemiUniqueName::uniqueName(
+                       filePrefix(info, obstime, ccx  ), ".synop" ) );
+  string tmpfile(tmppath + "/" + filename);
+  string dstfile(path + "/" + filename);
 
-  if(!S_ISDIR(sbuf.st_mode)){
-    LOGERROR("copyto: <"<<info->copyto()<<"> not a directory!");
-    return;
-  }
+  if( ! isDirWithWritePermission( path, error ) ) {
+      ostringstream o;
+      o << "Save to path: '" << path << "'. "
+        << "Path not a directory or permission denied."
+        << "("<< error << ")";
 
-  if(ccx==0){
-    ost << info->copyto() << "/" <<  info->wmono() << "-" 
-	<< setfill('0') << setw(2) << obstime.day() << setw(2) 
-	<< obstime.hour()
-	<< ".synop";
-  }else{ 
-    ost << info->copyto() << "/" <<  info->wmono() << "-" 
-	<< setfill('0') << setw(2) << obstime.day() << setw(2) 
-	<< obstime.hour() << "-" << static_cast<char>('A'+(ccx-1))
-	<< ".synop";
-  }
+      LOGERROR( o.str() );
+      return;
+   }
 
-  f.open(ost.str().c_str());
+   if( ! isDirWithWritePermission( tmppath, error ) )
+      tmpfile.erase();
 
-  if(f.is_open()){
-    LOGINFO("Writing SYNOP to file: " << ost.str());
-    f << wmomsg;
-    f.close();
-  }else{
-    LOGERROR("Cant write  SYNOP to file: " << ost.str());
-  }  
+   if( !tmpfile.empty() )
+      f.open( tmpfile );
+   else
+      f.open( dstfile );
+
+   if(f.is_open()){
+      LOGINFO("Writing SYNOP to file: " << (tmpfile.empty()?dstfile:tmpfile));
+      f << wmomsg;
+      f.close();
+
+      if( ! tmpfile.empty() ) {
+         if( rename( tmpfile.c_str(), dstfile.c_str() ) == -1 ) {
+            ostringstream ost;
+            ost << "Failed to move: " << tmpfile << " -> " << dstfile
+                << ". Reason: " << myStrerror( errno );
+            LOGERROR( ost.str() );
+            return;
+         } else {
+            LOGDEBUG( "saveToFile: moved: " << tmpfile << " -> " << dstfile );
+         }
+      }
+   }else{
+      LOGERROR("Cant write  SYNOP to file: " << (tmpfile.empty()?dstfile:tmpfile));
+   }
 }
-    
+
 
 bool 
 SynopWorker::
@@ -870,3 +907,53 @@ checkContinuesTypes(ObsEvent &event,
 
   return true;
 }
+
+
+
+namespace {
+bool
+isDirWithWritePermission( const std::string &path_, std::string &error )
+{
+   try {
+      fs::path path( path_ );
+
+      if( fs::exists( path ) &&
+          fs::is_directory( path ) &&
+          access( path_.c_str(), W_OK | X_OK ) > -1 )
+         return true;
+      else
+         error = myStrerror( errno );
+   }
+   catch( const fs::filesystem_error &ex ) {
+      error=ex.what();
+   }
+
+   return false;
+
+
+}
+std::string
+myStrerror(int errnum )
+{
+   char buf[1024];
+   char *p=0;
+   std::ostringstream ost;
+
+#ifdef _GNU_SOURCE
+   p = strerror_r( errnum, buf, 1024 );
+#else
+   if( strerror_r( errnum, buf, 1024) == 0 )
+      p = buf;
+#endif
+
+   if( p )
+      ost << p;
+   else
+      ost << "errno: " << errnum;
+   return ost.str();
+}
+
+
+}
+
+

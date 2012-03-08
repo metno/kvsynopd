@@ -2,6 +2,8 @@ etc/kvalobs
 usr/bin
 usr/share/kvsynopd
 var/lib/kvsynopd
+var/lib/kvsynopd/synop2norcom
+var/lib/kvsynopd/synop2norcom/tmp
 var/log/kvalobs
 var/log/kvalobs/kvsynop
 var/log/kvalobs/kvsynop/debug
