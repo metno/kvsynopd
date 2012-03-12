@@ -341,8 +341,6 @@ doSynop(int           synopno,
 			synop+=" CCCXXX";
     }
 
-    //cerr << " hour: " << sisteTid.time().hour() << " ITR: " << ITR << " RRRtr: [" << RRRtr << "]" << endl;
-
     if(ir==1){
        if( !sisteTid.IIR.empty() && precipitationParam==PrecipitationRRR) {
           int irTmp = sisteTid.IIR[0] - '0';
@@ -360,8 +358,6 @@ doSynop(int           synopno,
        }
     }
 
-    //cerr << " nedboerKodeSect1: [" << RRRtr << "] nedboerKodeSect3: [" << RRRtr << "]" << endl;
-
     //Sjekk kodene i 333 (Regional seksjon)
     Sjekk_kode( minMaxKode );
     Sjekk_kode( nedboerKodeSect3 );
@@ -373,12 +369,7 @@ doSynop(int           synopno,
     Sjekk_kode( skyerEkstraKode3 );
     Sjekk_kode( skyerEkstraKode4 );
 
-    //Sjekk kodene i 555 (National seksjon)
-    Sjekk_kode( verTilleggKode );
-    Sjekk_kode( maxVindMaxKode );
-    Sjekk_kode( maxMinKode );
-    Sjekk_kode( gressTemp );
-    /**
+        /**
      * Changed the wind unit from knop to m/s
      * 
      * AAXX DDhhW 
@@ -402,10 +393,19 @@ doSynop(int           synopno,
     synop+=luftTempKode+duggTempKode;
 
     synop+= trykkQFEKode+trykkQFFKode+tendensKode;
-    
+
     if(ir==1 && !nedboerKodeSect1.empty())
-      	synopStr+=nedboerKodeSect1;
-    
+       synopStr+=nedboerKodeSect1;
+    else if( verTilleggKode.length() > 3 ) {
+       verTilleggKode[2]='/';
+    }
+
+    //Sjekk kodene i 555 (National seksjon)
+    Sjekk_kode( verTilleggKode );
+    Sjekk_kode( maxVindMaxKode );
+    Sjekk_kode( maxMinKode );
+    Sjekk_kode( gressTemp );
+
     if(verGenerelt)
 		synopStr+=verGenereltKode;
     
@@ -1675,7 +1675,7 @@ doEsss( std::string &kode, const SynopData &data )
    int    iSA;
    int iE = INT_MAX;
    int iEm = INT_MAX;
-   
+
    if( data.SA == FLT_MAX )
    	iSA = INT_MAX;
    else
@@ -1684,13 +1684,14 @@ doEsss( std::string &kode, const SynopData &data )
    if( data.EM == FLT_MAX && iSA == INT_MAX && data.E == FLT_MAX )
       return;
    
-   if( data.E != FLT_MAX ) {
+   if( data.EM != FLT_MAX ) {
+      iEm = (int) floor((double) data.EM + 0.5 );
+   } else if( data.E != FLT_MAX ) {
       iE = (int) floor((double) data.E + 0.5 );
 
       if( iE >= 10 && iE <20 )
          iEm = iE - 10;
-   } else if( data.EM == FLT_MAX )
-      iEm = (int) floor((double) data.EM + 0.5 );
+   }
 
    if( iEm == INT_MAX || iEm < 0 || iEm > 10 || iE == 33 )
       em = "/";
@@ -1716,7 +1717,6 @@ doEsss( std::string &kode, const SynopData &data )
       sprintf( buf, "%03d", iSA );
       sa = buf;
    }
-
       
    //Creates the code 4E'sss
    kode = " 4" + em + sa;
@@ -1929,84 +1929,84 @@ Synop::Nedboer_Kode(std::string &kode,  //RRRtr
 		    		int &tr,
 		    		int ir)
 {
-  	double dummy;
-  	float  nedboerTiDel=0.0;
-  	char   stmp[30];
+   double dummy;
+   float  nedboerTiDel=0.0;
+   char   stmp[30];
 
-  	kode.erase();
-  	rr24Kode.erase();
+   kode.erase();
+   rr24Kode.erase();
 
-  	if(time==6){
-    	//Skal vi kode 24 (7RR24) timers nedb�r i 333 seksjonen 
-    	if(fRR24!=FLT_MAX){
-      		if( fRR24 == FLT_MIN ) //FLT_MIN signals trace of precipitation
-      			rr24Kode=" 79999";
-      		else if(fRR24<0){
-				rr24Kode=" 70000";
-      		}else{
-				fRR24*=10;
+   if(time==6){
+      //Skal vi kode 24 (7RR24) timers nedb�r i 333 seksjonen
+      if(fRR24!=FLT_MAX){
+         if( fRR24 == FLT_MIN ) //FLT_MIN signals trace of precipitation
+            rr24Kode=" 79999";
+         else if(fRR24<0){
+            rr24Kode=" 70000";
+         }else{
+            fRR24*=10;
 
-				if(fRR24>9999.5){
-	  				rr24Kode=" 7////";
-				}else{
-	  				sprintf(stmp," 7%04.0f",fabs(floor((double)fRR24+0.5)));
-	  				rr24Kode=stmp;
-				}
-      		}
-    	}else{
-      		rr24Kode=" 7////";
-    	}
-  	}
-	  
-  	if(tr<0 || tr>9){
-    	if((time==0)||(time==12))
-      		tr=1;
-    	else if((time==6)||(time==18))      
-      		tr=2;
-    	else
-      		tr=5;
-  	}
-  
-  	if(verTilleggKode.length()!=6)
-    	verTilleggKode=" 4////";
+            if(fRR24>9999.5){
+               rr24Kode=" 7////";
+            }else{
+               sprintf(stmp," 7%04.0f",fabs(floor((double)fRR24+0.5)));
+               rr24Kode=stmp;
+            }
+         }
+      }else{
+         rr24Kode=" 7////";
+      }
+   }
 
-  	if(ir==1){
-    
-    	//Ugyldig verdi
-    	if(totalNedboer==FLT_MAX || totalNedboer<=-2.0){
-      		kode=" 6////";
-      		return;
-    	}else if(totalNedboer<0.0){ //T�rt
-      		sprintf(stmp, " 6000%1d", tr);
-      		kode=stmp;
-      		verTilleggKode[2]='0';
-      		return;
-    	}else if(totalNedboer<1.0){
-      		sprintf(stmp," 699%1.0f%1d",fabs(floor((double)totalNedboer*10+0.5)),tr);
-    	}else if((totalNedboer>=1.0)&&(totalNedboer<989.0)){
-      		sprintf(stmp," 6%03.0f%1d",fabs(floor((double)totalNedboer+0.5)), tr);
-    	}else{ // totalNedboer>=989.0
-      		sprintf(stmp," 6989%1d", tr);
-    	}
+   if(tr<0 || tr>9){
+      if((time==0)||(time==12))
+         tr=1;
+      else if((time==6)||(time==18))
+         tr=2;
+      else
+         tr=5;
+   }
 
-    	kode=stmp;
-    	nedboerTiDel = 10*modf((double)totalNedboer, &dummy);
-    
-    	//verTilleggKode er p� formen:
-    	// ' 4RtWdWdWd', det er Rt vi skal sette. Rt har indeks=2.
-    	//  012 3 4 5 , indekser.
-    	sprintf(stmp, "%1.0f", nedboerTiDel);
-    	verTilleggKode[2]=stmp[0];
-  	}else if(ir==3){
-    	sprintf(stmp, " 6000%1d", tr);
-    	kode=stmp;
-    	verTilleggKode[2]='0';
-  	}else if(ir==4){
-    	kode=" 6////";
-  	}else{
-    	LOGWARN("Nedboer (6RRRtr): Unknown ir <" << ir << ">!");
-    	kode=" 6////";
-  	}
+   if(verTilleggKode.length()!=6)
+      verTilleggKode=" 4////";
+
+   if(ir==1){
+
+      //Ugyldig verdi
+      if(totalNedboer==FLT_MAX || totalNedboer<=-2.0){
+         kode=" 6////";
+         return;
+      }else if(totalNedboer<0.0){ //T�rt
+         sprintf(stmp, " 6000%1d", tr);
+         kode=stmp;
+         verTilleggKode[2]='0';
+         return;
+      }else if(totalNedboer<1.0){
+         sprintf(stmp," 699%1.0f%1d",fabs(floor((double)totalNedboer*10+0.5)),tr);
+      }else if((totalNedboer>=1.0)&&(totalNedboer<989.0)){
+         sprintf(stmp," 6%03.0f%1d",fabs(floor((double)totalNedboer+0.5)), tr);
+      }else{ // totalNedboer>=989.0
+         sprintf(stmp," 6989%1d", tr);
+      }
+
+      kode=stmp;
+      nedboerTiDel = 10*modf((double)totalNedboer, &dummy);
+
+      //verTilleggKode er p� formen:
+      // ' 4RtWdWdWd', det er Rt vi skal sette. Rt har indeks=2.
+      //  012 3 4 5 , indekser.
+      sprintf(stmp, "%1.0f", nedboerTiDel);
+      verTilleggKode[2]=stmp[0];
+   }else if(ir==3){
+      sprintf(stmp, " 6000%1d", tr);
+      kode=stmp;
+      verTilleggKode[2]='0';
+   }else if(ir==4){
+      kode=" 6////";
+   }else{
+      LOGWARN("Nedboer (6RRRtr): Unknown ir <" << ir << ">!");
+      kode=" 6////";
+   }
 } /* Nedboer_Kode */
 
 
