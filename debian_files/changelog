@@ -1,3 +1,9 @@
+kvsynopd (2.4.6~rc2-1) unstable; urgency=low
+  * Fix bug in E'sss (Use E or Em). 
+
+ -- Kvalobs <kvalobs@met.no>  Mon, 12 Mar 2012 14:30:00 +0100
+
+
 kvsynopd (2.4.6~rc1-1) unstable; urgency=low
   * Write synop to a temporary directory and move it (atomic) into
     the destination directory. 
