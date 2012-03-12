@@ -338,7 +338,7 @@ TEST_F(SynopEncodeTest, synop_to_synop )
    EXPECT_TRUE( data.firstTime() == dt );
    EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
    miutil::cmprspace( synop, true );
-   EXPECT_EQ( synop, "AAXX 22061 89504 43/// /0203 11211 21400 38316 49857 55004 333 21340=") << "Generated synop 1: " << synop;
+   EXPECT_EQ( synop, "AAXX 22061 89504 43/// /0203 11211 21400 38316 49857 55004 333 21340=");
 
    loadSynopDataFromFile( "data_99990-1.dat", stInfo, allData, validData );
    dt=miTime("2010-06-25 06:00:00");
@@ -346,8 +346,7 @@ TEST_F(SynopEncodeTest, synop_to_synop )
    EXPECT_TRUE( data.firstTime() == dt );
    EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
    miutil::cmprspace( synop, true );
-   EXPECT_EQ( synop, "AAXX 25061 89504 43/// /1301 11227 21257 38358 49920 53002 333 21282=") << "Generated synop 1: " << synop;
-
+   EXPECT_EQ( synop, "AAXX 25061 89504 43/// /1301 11227 21257 38358 49920 53002 333 21282=");
 }
 
 TEST_F( SynopEncodeTest, RR_FROM_RA )
@@ -368,6 +367,51 @@ TEST_F( SynopEncodeTest, RR_FROM_RA )
    EXPECT_EQ( synop, "AAXX 03061 01327 11358 82804 10042 20017 60152 78188 889// 333 20042 70553 91115 555 0/109 10073 455//=");
 
 }
+
+TEST_F( SynopEncodeTest, EmAndE )
+{
+   using namespace miutil;
+   SynopDataList allData;
+   SynopDataList data;
+   StationInfoPtr stInfo;
+   string synop;
+   miTime dt;
+   kvdatacheck::Validate validData( kvdatacheck::Validate::NoCheck );
+   stInfo = findWmoNo( 1492 );
+
+   ASSERT_TRUE( stInfo );
+
+   loadSynopDataFromFile( "data_18700-1.dat", stInfo, allData, validData );
+   dt=miTime("2012-03-12 06:00:00");
+   data = allData.subData( dt );
+
+   EXPECT_TRUE( data.firstTime() == dt ) << "time: " << data.firstTime();
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1492;
+   miutil::cmprspace( synop, true );
+
+   //E'sss from Em (paramid 7).
+   //cerr << "SYNOP: [" << synop << "]" << endl;
+   EXPECT_EQ( synop, "AAXX 12061 01492 16/// ///// 1//// 2//// 6//// 333 41///=");
+
+   dt=miTime("2012-03-13 06:00:00");
+   data = allData.subData( dt );
+   EXPECT_TRUE( data.firstTime() == dt );
+
+   //E'sss from E (paramid 129)
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1492;
+   miutil::cmprspace( synop, true );
+   EXPECT_EQ( synop, "AAXX 13061 01492 16/// ///// 1//// 2//// 6//// 333 41///=");
+
+   //Test when both E and Em is given. It should use Em.
+   dt=miTime("2012-03-14 06:00:00");
+   data = allData.subData( dt );
+   EXPECT_TRUE( data.firstTime() == dt );
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1492;
+   miutil::cmprspace( synop, true );
+   EXPECT_EQ( synop, "AAXX 14061 01492 16/// ///// 1//// 2//// 6//// 333 41///=");
+}
+
+
 
 
 int
