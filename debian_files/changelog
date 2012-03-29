@@ -1,3 +1,10 @@
+kvsynopd (2.4.6-1) unstable; urgency=low
+  * New release.
+  * No changes since 2.4.6~rc3-1.
+
+ -- Kvalobs <kvalobs@met.no>  Thu, 29 Mar 2012 14:45:00 +0200
+
+
 kvsynopd (2.4.6~rc3-1) unstable; urgency=low
   * Change dependency from libkvcpp to libkvcpp2 
 
