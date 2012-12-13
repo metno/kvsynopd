@@ -2095,7 +2095,7 @@ Synop::doNedboerKode(std::string &nedboerKode,
 int
 Synop::nedborFromRA(float &nedbor, float &fRR24, int &tr, SynopDataList &sd)
 {
-   const float limit=0.2;
+   const float limit=0.19;
    const float bucketFlush=-10.0;
    int   nTimes;
    miutil::miTime t=sd.begin()->time();
@@ -2513,7 +2513,7 @@ Synop::nedborFromRRRtr(float &nedbor,
 int  
 Synop::nedborFromRR(float &nedbor, float &fRR24, int &tr, SynopDataList &sd)
 {
-  	const float limit=0.2;
+  	const float limit=0.049;
   	int   nTimeStr=sd.nContinuesTimes();
   	int   time=sd.begin()->time().hour();
   	int   nTimes;
