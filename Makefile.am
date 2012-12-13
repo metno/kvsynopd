@@ -1,4 +1,4 @@
-SUBDIRS = src 
+SUBDIRS = src/gtest src 
 ACLOCAL_AMFLAGS = -I m4
 sqldir = $(datadir)/kvsynopd
 sql_DATA = cleansynopdb.sql 
