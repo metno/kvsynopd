@@ -32,8 +32,9 @@
 #define __SynopWorker_h__
 
 #include <sstream>
-#include "App.h"
+#include <dnmithread/CommandQue.h>
 #include <kvcpp/kvevents.h>
+#include "App.h"
 #include "DataList.h"
 #include "SynopData.h"
 #include "obsevent.h"

@@ -1,3 +1,9 @@
+kvsynopd (2.4.7-1) unstable; urgency=low
+  * New release.
+  * No change since last rc.
+
+ -- Kvalobs <kvalobs@met.no>  Thu, 10 Jan 2013 10:15:00 +0100
+
 kvsynopd (2.4.7~rc1-1) unstable; urgency=low
   * New rc.
   * Fix, Bug #1355, changed limits values for no precipitation.
