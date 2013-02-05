@@ -63,13 +63,18 @@ loadSynopData(const DataEntryList &dl,
 				continue;
 
 			itd=dataList.begin();
+
+			//We only use data with obstime on the hour.
+			if( itd->obstime().min() != 0 )
+			    continue;
+
 			synopData.time(itd->obstime());
 
 			for(;itd!=dataList.end(); itd++){
 				//COMMENT:
 				//We use only the default sensor for every parameter, ie sensor=0.
-				//This may be to restrective. Shuld this be a configuration option for
-				//the parameters we wish to overide this behavior for.
+				//This may be to restrictive. Should this be a configuration option for
+				//the parameters we wish to override this behavior for.
 
 				if(itd->sensor()==0 && itd->level()==0){
 					if( validate( *itd ) )
