@@ -1,5 +1,6 @@
-kvsynopd (2.4.8~rc1-1) unstable; urgency=low
+kvsynopd (2.4.8~rc2-1) unstable; urgency=low
   * Only use data with obstime on the hour.
+  * Do not trigger a SYNOP generation if obstime is NOT on the hour.
 
  -- Kvalobs <kvalobs@met.no>  Tue, 11 Feb 2013 08:45:00 +0100
 
