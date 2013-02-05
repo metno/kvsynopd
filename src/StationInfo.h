@@ -502,7 +502,7 @@ class StationInfo
    */
   bool delay(int hour, int &minute, bool &force, bool &relativToFirst)const;
   
-  bool msgForTime(int hh)const;
+  bool msgForTime( const miutil::miTime &obstime )const;
 
   friend std::ostream& operator<<(std::ostream& ost,
 				  const StationInfo& sd);

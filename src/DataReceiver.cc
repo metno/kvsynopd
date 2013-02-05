@@ -257,7 +257,7 @@ DataReceiver::newData( kvservice::KvObsDataListPtr data ){
          continue;
       }
 
-      if( !station->msgForTime(dit->obstime().hour()) ){
+      if( !station->msgForTime( dit->obstime() ) ){
          LOGINFO("Skip SYNOP for this hour: " << dit->obstime() << endl
                << " stationid: " << dit->stationID() << endl << " typeid: "
                << dit->typeID());

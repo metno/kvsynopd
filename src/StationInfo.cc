@@ -328,8 +328,14 @@ mustHaveType( int typeid_, int hour )const
 
 bool
 StationInfo::
-msgForTime(int hh)const
+msgForTime( const miutil::miTime &obstime )const
 {
+    int hh = obstime.hour();
+
+    //Do not accept obstime NOT on the hour.
+    if( obstime.min() != 0 )
+        return false;
+
 	TLongList tp=typepriority(hh);
 	
 	//Check to see if we have any types for this hour.
