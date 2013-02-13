@@ -1,3 +1,8 @@
+kvsynopd (2.4.8-1) unstable; urgency=low
+  * New release, no change since last rc.
+
+ -- Kvalobs <kvalobs@met.no>  Wed, 13 Feb 2013 15:03:00 +0100
+
 kvsynopd (2.4.8~rc2-1) unstable; urgency=low
   * Only use data with obstime on the hour.
   * Do not trigger a SYNOP generation if obstime is NOT on the hour.
