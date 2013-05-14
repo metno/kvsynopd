@@ -93,7 +93,7 @@ class  SynopData
   	float  WAWA;
   	float  HLN;
   	float  EM;    //Snow state to the gound (Markas tilstand).
-  	float  E;    //Snow state to the gound (Markas tilstand).
+  	float  EE;    //BUFR 020062, The values 10-19 id identical as the values 0-9 for EM
   	float  SA;    //Snow depth.
   	float  Vmor;  //Automatic measured horizontal visibility
   	float  VV;    //Human estimated horizontal visibility

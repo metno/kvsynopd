@@ -1,4 +1,5 @@
 AM_CPPFLAGS = -D_REENTRANT \
+              $(putools_CFLAGS) \
               $(kvcpp_CFLAGS) \
               $(BOOST_CPPFLAGS) \
               $(omniORB4_CFLAGS)  
@@ -47,8 +48,12 @@ kvsynopd_SOURCES = kvsynopd.hh kvsynopdSK.cc \
 kvsynopd_CPPFLAGS = $(AM_CPPFLAGS) 
 kvsynopd_LDFLAGS = -pthread -export-dynamic $(BOOST_LDFLAGS)
 
-kvsynopd_LDADD = $(kvcpp_LIBS) $(BOOST_THREAD_LIB) \
+kvsynopd_LDADD = \
+				 $(putools_LIBS) \
+                 $(kvcpp_LIBS) \
+                 $(BOOST_THREAD_LIB) \
 				 $(BOOST_FILESYSTEM_LIB) \
+				 $(BOOST_SYSTEM_LIB) \
                  -lm         
                  
 EXTRA_DIST = kvsynopd_schema.sql
@@ -61,19 +66,19 @@ kvsynopclt_SOURCES = kvsynopclt.cc \
                      
 kvsynopclt_CPPFLAGS = $(AM_CPPFLAGS)
 kvsynopclt_LDFLAGS = -pthread $(BOOST_LDFLAGS)
-kvsynopclt_LDADD = $(kvcpp_LIBS) $(BOOST_THREAD_LIB) \
+kvsynopclt_LDADD = $(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
                    -lm  
                    
 kvsynopdbclt_SOURCES = kvsynopdbclt.cc \
                        tblSynop.cc tblSynop.h
 kvsynopdbclt_LDFLAGS = -pthread $(BOOST_LDFLAGS) 
-kvsynopdbclt_LDADD = $(kvcpp_LIBS) $(BOOST_THREAD_LIB) \
+kvsynopdbclt_LDADD = $(kvcpp_LIBS) $(putools_LIBS)  $(BOOST_THREAD_LIB) \
                      -lm 
 kvsynopdparse_SOURCES = kvsynopdparse.cc \
                         StationInfo.cc StationInfo.h \
                         StationInfoParse.cc StationInfoParse.h
 kvsynopdparse_LDFLAGS = -pthread $(BOOST_LDFLAGS)
-kvsynopdparse_LDADD =  $(kvcpp_LIBS) $(BOOST_THREAD_LIB) \
+kvsynopdparse_LDADD =  $(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
                      -lm
                         
 sqldir=$(datadir)/kvsynopd
@@ -107,5 +112,6 @@ kvSynopEncodeTest_CPPFLAGS = $(AM_CPPFLAGS) \
                            $(gtest_CFLAGS) 
 
 kvSynopEncodeTest_LDADD = $(gtest_LIBS) \
-						  $(kvcpp_LIBS)
+						  $(kvcpp_LIBS) \
+						  $(putools_LIBS) 
 endif

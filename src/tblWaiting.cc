@@ -31,8 +31,10 @@
 #include <list>
 #include <stdlib.h>
 #include <stdio.h>
-#include "tblWaiting.h"
+#include <sstream>
 #include <milog/milog.h>
+#include "tblWaiting.h"
+
 
 using namespace std;
 using namespace miutil;
@@ -42,7 +44,9 @@ void
 TblWaiting::
 createSortIndex() 
 {
-  sortBy_=miString(wmono_)+obstime_.isoTime()+delaytime_.isoTime();
+	ostringstream ost;
+	ost << wmono_ << obstime_.isoTime() << delaytime_.isoTime();
+	sortBy_=ost.str();
 }
   
 void 
@@ -119,7 +123,7 @@ set(int                  wmono,
   return true;
 }
 
-miutil::miString 
+string
 TblWaiting::
 toSend() const
 {
@@ -127,15 +131,15 @@ toSend() const
  
   ost << "(" 
       << wmono_             << ","
-      << quoted(obstime_)   << ","         
-      << quoted(delaytime_)   
+      << quoted(obstime_.isoTime())   << ","
+      << quoted(delaytime_.isoTime())
       << ")";      
 
   return ost.str();
 }
 
 
-miutil::miString 
+string
 TblWaiting::
 uniqueKey()const
 {
@@ -149,13 +153,13 @@ uniqueKey()const
 
 
 
-miutil::miString 
+string
 TblWaiting::
 toUpdate()const
 {
   ostringstream ost;
   
-  ost << "SET delaytime=" << quoted(delaytime_)     
+  ost << "SET delaytime=" << quoted(delaytime_.isoTime())
       << " WHERE   wmono=" << wmono_ << " AND "
       << "       obstime=" << quoted(obstime_.isoTime());
 

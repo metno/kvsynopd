@@ -35,7 +35,6 @@
 #include <milog/milog.h>
 
 using namespace std;
-using namespace miutil;
 using namespace dnmi;
 
 void 
@@ -113,7 +112,7 @@ set(const std::string &key,
   return true;
 }
 
-miutil::miString 
+string
 TblKeyVal::
 toSend() const
 {
@@ -128,7 +127,7 @@ toSend() const
 }
 
 
-miutil::miString 
+string
 TblKeyVal::
 uniqueKey()const
 {
@@ -141,7 +140,7 @@ uniqueKey()const
 
 
 
-miutil::miString 
+string
 TblKeyVal::
 toUpdate()const
 {

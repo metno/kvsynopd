@@ -34,6 +34,7 @@
 #include <puTools/miTime.h>
 #include "getDataReceiver.h"
 #include "GetDataThread.h"
+#include "defines.h"
 
 using namespace std;
 using namespace kvalobs;
@@ -140,7 +141,7 @@ reloadAll(kvalobs::kvDbGate    &gate,
       for(StationInfo::ITLongList sit=idList.begin();
             sit!=idList.end(); sit++){
          ost << " " <<*sit;
-         which.addStation(*sit, fromTime);
+         which.addStation(*sit, TO_PTIME( fromTime ));
       }
 
       IDLOGINFO( logid,
@@ -204,7 +205,7 @@ reloadOne(kvalobs::kvDbGate    &gate,
    for(StationInfo::ITLongList sit=idList.begin();
          sit!=idList.end(); sit++){
       ost << " " <<*sit;
-      which.addStation(*sit, fromTime);
+      which.addStation( *sit, TO_PTIME(fromTime) );
    }
 
    IDLOGINFO( logid,

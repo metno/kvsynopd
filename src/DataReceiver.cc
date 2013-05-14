@@ -35,6 +35,7 @@
 #include "DataReceiver.h"
 #include "tblSynop.h"
 #include <kvalobs/kvPath.h>
+#include "defines.h"
 
 using namespace std;
 using namespace kvservice;
@@ -107,7 +108,7 @@ DataReceiver::doCheckReceivedData( ObsEvent *obsevent ){
 
    setDefaultLogger(obsevent->stationInfo());
 
-   if( !obsevent->stationInfo()->msgForTime(obsevent->obstime().hour()) ){
+   if( !obsevent->stationInfo()->msgForTime(obsevent->obstime() ) ){
       LOGINFO("Skip SYNOP for this hour: " << obsevent->obstime() << endl
             << " wmono: " << obsevent->stationInfo()->wmono());
       delete obsevent;
@@ -178,8 +179,10 @@ DataReceiver::newData( kvservice::KvObsDataListPtr data ){
             << dit->obstime() << endl << "        typeid: " << dit->typeID()
             << endl << "   #parameters: " << it->dataList().size() << endl);
 
-      if( !app.acceptAllTimes() && (dit->obstime() < fromTime || dit->obstime()
-            > toTime) ){
+      if( !app.acceptAllTimes() &&
+    	  ( TO_MITIME(dit->obstime()) < fromTime ||
+    	    TO_MITIME(dit->obstime()) > toTime) )
+      {
          LOGWARN("obstime to old or to early: " << dit->obstime() << endl
                << "-- Valid interval: " << fromTime << " - " << toTime);
 
@@ -211,8 +214,10 @@ DataReceiver::newData( kvservice::KvObsDataListPtr data ){
             << toTime);
 
       //**1**
-      if( !app.acceptAllTimes() && (dit->obstime() < fromTime || dit->obstime()
-            > toTime) ){
+      if( !app.acceptAllTimes() &&
+    	  ( TO_MITIME(dit->obstime()) < fromTime ||
+    	    TO_MITIME(dit->obstime()) > toTime) )
+      {
          LOGWARN("obstime to old or to early: " << dit->obstime() << endl
                << "-- Valid interval: " << fromTime << " - " << toTime);
          Logger::resetDefaultLogger();
@@ -257,7 +262,7 @@ DataReceiver::newData( kvservice::KvObsDataListPtr data ){
          continue;
       }
 
-      if( !station->msgForTime( dit->obstime() ) ){
+      if( !station->msgForTime( TO_MITIME( dit->obstime() ) ) ){
          LOGINFO("Skip SYNOP for this hour: " << dit->obstime() << endl
                << " stationid: " << dit->stationID() << endl << " typeid: "
                << dit->typeID());

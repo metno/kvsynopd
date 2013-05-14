@@ -29,6 +29,7 @@
   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <limits.h>
 #include <float.h>
 #include <sstream>
 #include <stdio.h>

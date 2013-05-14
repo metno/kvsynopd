@@ -62,9 +62,9 @@ public:
   void clean();
 
   const char* tableName()            const {return "keyval";}
-  miutil::miString toSend()    const;
-  miutil::miString toUpdate()  const;
-  miutil::miString uniqueKey() const;
+  std::string toSend()    const;
+  std::string toUpdate()  const;
+  std::string uniqueKey() const;
 
   std::string  key() const { return key_; }
   std::string  val() const { return val_; }

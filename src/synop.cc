@@ -28,6 +28,7 @@
   with KVALOBS; if not, write to the Free Software Foundation Inc., 
   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+#include <limits.h>
 #include <sstream>
 #include <algorithm>
 #include <math.h>
@@ -1681,16 +1682,19 @@ doEsss( std::string &kode, const SynopData &data )
    else
    	iSA = (int) floor((double) data.SA + 0.5 );
    
-   if( data.EM == FLT_MAX && iSA == INT_MAX && data.E == FLT_MAX )
+   if( data.EM == FLT_MAX && iSA == INT_MAX && data.EE == FLT_MAX )
       return;
    
-   if( data.EM != FLT_MAX ) {
-      iEm = (int) floor((double) data.EM + 0.5 );
-   } else if( data.E != FLT_MAX ) {
-      iE = (int) floor((double) data.E + 0.5 );
+   if( data.EE != FLT_MAX  ) {
+	   iE = (int) floor((double) data.EE + 0.5 );
 
-      if( iE >= 10 && iE <20 )
-         iEm = iE - 10;
+	   if( iE >= 10 && iE <20 ) {
+		   iEm = iE - 10;
+	   }
+   }
+
+   if( iEm == INT_MAX  && data.EM != FLT_MAX ) {
+	   iEm = (int) floor((double) data.EM + 0.5 );
    }
 
    if( iEm == INT_MAX || iEm < 0 || iEm > 10 || iE == 33 )

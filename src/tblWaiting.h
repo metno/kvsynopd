@@ -32,6 +32,7 @@
 #define __kvsynop_tblWaiting_h__
 
 #include <kvalobs/kvDbBase.h>
+#include <puTools/miTime.h>
 
 class TblWaiting : public kvalobs::kvDbBase {
 private:
@@ -60,9 +61,9 @@ private:
   void clean();
 
   const char*            tableName() const {return "waiting";}
-  miutil::miString toSend()    const;
-  miutil::miString toUpdate()  const;
-  miutil::miString uniqueKey() const;
+  std::string toSend()    const;
+  std::string toUpdate()  const;
+  std::string uniqueKey() const;
 
   int              wmono()    const { return wmono_;    }
   miutil::miTime   obstime()  const { return obstime_;  }

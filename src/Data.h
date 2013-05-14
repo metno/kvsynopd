@@ -35,6 +35,7 @@
 #include <kvalobs/kvDataFlag.h>
 #include <kvalobs/kvDbBase.h>
 #include <iostream>
+#include <puTools/miTime.h>
 
 class Data : public kvalobs::kvDbBase {
 private:
@@ -82,9 +83,9 @@ public:
 	void clean();
 
 	const char* tableName() const {return "data";}
-	miutil::miString toSend()   const;
-	miutil::miString toUpdate() const;
-	miutil::miString uniqueKey() const;
+	std::string toSend()   const;
+	std::string toUpdate() const;
+	std::string uniqueKey() const;
 
 	int              stationID()   const { return stationid_;  }
 	miutil::miTime   obstime()     const { return obstime_;    }

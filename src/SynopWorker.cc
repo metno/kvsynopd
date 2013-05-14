@@ -51,6 +51,7 @@
 #include "SemiUniqueName.h"
 #include "LoadSynopData.h"
 #include "App.h"
+#include "defines.h"
 
 using namespace std;
 using namespace kvalobs;
@@ -343,7 +344,7 @@ SynopWorker::newObs(ObsEvent &event)
         return;
     }
 
-    if(!info->msgForTime(event.obstime().hour())){
+    if(!info->msgForTime( event.obstime() )){
         LOGINFO("Skip SYNOP for time: " << event.obstime() << "  wmono: " <<
                 info->wmono());
         swmsg << "Skip SYNOP for time: " << event.obstime() << "  wmono: " <<
@@ -480,7 +481,7 @@ SynopWorker::newObs(ObsEvent &event)
         LOGWARN("EXCEPTION: out_of_range: wmono: " << info->wmono() <<
                 " obstime: "  <<
                 ((synopData.begin()!=synopData.end())?
-                        synopData.begin()->time():"(NULL)") << endl <<
+                        synopData.begin()->time().isoTime():"(NULL)") << endl <<
                         "what: " << e.what() << endl);
         synopOk=false;
         swmsg << "Cant create a synop!" << endl;
@@ -488,7 +489,7 @@ SynopWorker::newObs(ObsEvent &event)
     catch(DataListEntry::TimeError &e){
         LOGWARN("Exception: TimeError: wmono: " << info->wmono() << " obstime: "  <<
                 ((synopData.begin()!=synopData.end())?
-                        synopData.begin()->time():"(NULL)") << endl<<
+                        synopData.begin()->time().isoTime():"(NULL)") << endl<<
                         "what: " << e.what() << endl);
         synopOk=false;
         swmsg << "Cant create a synop!" << endl;
@@ -497,7 +498,7 @@ SynopWorker::newObs(ObsEvent &event)
         LOGWARN("EXCEPTION(Unknown): Unexpected exception in Synop::doSynop:" <<
                 endl << "wmono: " << info->wmono() << " obstime: "  <<
                 ((synopData.begin()!=synopData.end())?
-                        synopData.begin()->time():"(NULL)") << endl);
+                        synopData.begin()->time().isoTime():"(NULL)") << endl);
         synopOk=false;
         swmsg << "Cant create a synop!" << endl;
     }

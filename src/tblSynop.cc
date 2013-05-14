@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include "tblSynop.h"
 #include <milog/milog.h>
-
+#include <sstream>
 using namespace std;
 using namespace miutil;
 using namespace dnmi;
@@ -42,8 +42,9 @@ void
 TblSynop::
 createSortIndex() 
 {
-  sortBy_=miString(wmono_)+obstime_.isoTime()+createtime_.isoTime()+
-    miString(ccx_);
+	ostringstream ost;
+	ost << wmono_ << obstime_.isoTime() << createtime_.isoTime() << ccx_;
+	sortBy_ = ost.str();
 }
   
 void 
@@ -138,7 +139,7 @@ set(int                  wmono,
   return true;
 }
 
-miutil::miString 
+string
 TblSynop::
 toSend() const
 {
@@ -146,8 +147,8 @@ toSend() const
  
   ost << "(" 
       << wmono_             << ","
-      << quoted(obstime_)   << ","         
-      << quoted(createtime_)<< ","        
+      << quoted(obstime_.isoTime())   << ","
+      << quoted(createtime_.isoTime())<< ","
       << crc_               << ","         
       << ccx_               << ","          
       << quoted(wmomsg_)    
@@ -157,7 +158,7 @@ toSend() const
 }
 
 
-miutil::miString 
+string
 TblSynop::
 uniqueKey()const
 {
@@ -171,13 +172,13 @@ uniqueKey()const
 
 
 
-miutil::miString 
+string
 TblSynop::
 toUpdate()const
 {
   ostringstream ost;
   
-  ost << "SET createtime=" << quoted(createtime_) << "," 
+  ost << "SET createtime=" << quoted(createtime_.isoTime()) << ","
       <<            "crc=" << crc_                << ","
       <<            "ccx=" << ccx_                << ","
       <<         "wmomsg=" << quoted(wmomsg_)     

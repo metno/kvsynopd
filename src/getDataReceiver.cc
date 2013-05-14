@@ -35,6 +35,7 @@
 #include "getDataReceiver.h"
 #include "Data.h"
 #include "obsevent.h"
+#include "defines.h"
 
 using namespace std;
 using namespace milog;
@@ -60,7 +61,7 @@ next(kvservice::KvObsDataList &dl)
       nObs++;
 
       int            sid=dit->stationID();
-      miutil::miTime obstime=dit->obstime();
+      miutil::miTime obstime=TO_MITIME( dit->obstime() );
 
       if(logid.empty()){
          IDLOGINFO("GetData", "Data received: stationID: " << sid

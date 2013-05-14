@@ -1,3 +1,10 @@
+kvsynopd (2.5.0-rc1-) unstable; urgency=low
+  * New rc.
+  * Make kvsynopd compatible with kvalobs without putools.
+  * Priority EE before EM if both is present.
+
+ -- Kvalobs <kvalobs@met.no>  Tue, 14 May 2013 15:03:00 +0200
+
 kvsynopd (2.4.8-1) unstable; urgency=low
   * New release, no change since last rc.
 

@@ -32,6 +32,7 @@
 #define __kvsynop_tblSynop_h__
 
 #include <kvalobs/kvDbBase.h>
+#include "defines.h"
 
 class TblSynop : public kvalobs::kvDbBase {
 private:
@@ -75,9 +76,11 @@ public:
   void clean();
 
   const char* tableName()            const {return "synop";}
-  miutil::miString toSend()    const;
-  miutil::miString toUpdate()  const;
-  miutil::miString uniqueKey() const;
+
+  std::string toSend()    const;
+  std::string toUpdate()  const;
+  std::string uniqueKey() const;
+
 
   int              wmono()       const { return wmono_;     }
   miutil::miTime   obstime()     const { return obstime_;   }

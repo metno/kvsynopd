@@ -31,8 +31,11 @@
 #include <list>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sstream>
 #include "Data.h"
 #include <milog/milog.h>
+#include "defines.h"
+
 
 using namespace std;
 using namespace miutil;
@@ -42,8 +45,10 @@ void
 Data::
 createSortIndex() 
 {
-  sortBy_=miString(stationid_)+miString(paramid_)+miString(sensor_)+
-    miString(level_)+obstime_.isoTime();
+	ostringstream ost;
+	ost << stationid_ << paramid_ << sensor_ << level_<<obstime_.isoTime();
+
+    sortBy_= ost.str();
 }
   
 void 
@@ -69,7 +74,7 @@ set(const kvalobs::kvData &data)
 
   	sprintf(buf, "%.2f", data.original());
   
-  	set(data.stationID(), data.obstime(), buf, data.paramID(), 
+  	set(data.stationID(), TO_MITIME(data.obstime()), buf, data.paramID(),
       	data.typeID(), data.sensor(), data.level(),
       	data.controlinfo().flagstring(),
       	data.useinfo().flagstring() );
@@ -145,14 +150,14 @@ set(int pos, const miutil::miTime &obt,
   return true;
 }
 
-miutil::miString 
+string
 Data::toSend() const
 {
   ostringstream ost;
  
   ost << "(" 
       << stationid_       << ","
-      << quoted(obstime_) << ","         
+      << quoted(obstime_.isoTime() ) << ","
       << quoted(original_)<< ","        
       << paramid_         << ","         
       << typeid_          << ","          
@@ -165,7 +170,7 @@ Data::toSend() const
 }
 
 
-miutil::miString 
+string
 Data::
 uniqueKey()const
 {
@@ -183,7 +188,7 @@ uniqueKey()const
 
 
 
-miutil::miString 
+string
 Data::
 toUpdate()const
 {

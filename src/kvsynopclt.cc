@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include "kvsynopd.hh"
 #include <kvalobs/kvPath.h>
@@ -115,7 +116,7 @@ main(int argn, char **argv)
       COUT("Delay list at: " << t << endl <<
 	   "---------------------------------------------------" << endl);
       for(CORBA::ULong i=0; i<dl.length(); i++){
-	COUT("wmono: " << setfill('0') << setw(5) << dl[i].wmono 
+	COUT("wmono: " << setfill('0') << setw(5) << dl[i].wmono
 	     << " obstime: " << dl[i].obstime 
 	     << " delay to: " << dl[i].delay << endl<< setfill(' '));
       }
