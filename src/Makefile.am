@@ -43,7 +43,8 @@ kvsynopd_SOURCES = kvsynopd.hh kvsynopdSK.cc \
                    GetDataThread.cc GetDataThread.h \
                    kvsynopdImpl.h obsevent.h \
                    LoadSynopData.h LoadSynopData.cc \
-                   SemiUniqueName.cc SemiUniqueName.h
+                   SemiUniqueName.cc SemiUniqueName.h \
+                   defines.h
 
 kvsynopd_CPPFLAGS = $(AM_CPPFLAGS) 
 kvsynopd_LDFLAGS = -pthread -export-dynamic $(BOOST_LDFLAGS)
