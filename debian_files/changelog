@@ -1,3 +1,9 @@
+kvsynopd (2.5.0-rc2-1) unstable; urgency=low
+  * New rc.
+  * Encode 3Ejjj in section 333 if EE is between 0 and 9 inclusive.
+
+ -- Kvalobs <kvalobs@met.no>  Tue, 28 May 2013 11:00:00 +0200
+
 kvsynopd (2.5.0-rc1-1) unstable; urgency=low
   * New rc.
   * Make kvsynopd compatible with kvalobs without putools.
