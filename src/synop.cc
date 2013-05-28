@@ -315,7 +315,7 @@ doSynop(int           synopno,
     Skydekke_Kode(skydekkeKode, sisteTid.skydekke);
     Hoyde_Sikt_Kode(hoyde_siktKode, sisteTid);
     //SjekkEsss(snoeMarkKode, sisteTid.snoeMark);
-    doEsss( snoeMarkKode, sisteTid );
+    doExxx( snoeMarkKode, sisteTid );
     Sjekk_Gruppe(8, skyerKode, sisteTid.skyer);
     Sjekk_Gruppe(8, skyerEkstraKode1, sisteTid.skyerEkstra1);
     Sjekk_Gruppe(8, skyerEkstraKode2, sisteTid.skyerEkstra2);
@@ -1596,43 +1596,23 @@ Synop::doVerGenerelt(std::string &kode, int &ix, const SynopData &data)
 }	
  
 
-/**
- * B�rge Moe
- * 1999.06.10
- *
- * Endringer av tolkning av Esss gitt av klimaavdelingen.
- * En Esss kode p� formen /000 skal ikke tas med i synopen
- * men den angir en lovlig verdi for koden. I f�lge synop 
- * kodingen (spec) er ikke sss=0 en lovlig verdi, men er tillatt
- * slik at man kan sende Esss hele �ret, ogs� n�r det ikke er
- * sn�.
- */
-bool 
-Synop::SjekkEsss(std::string &kode, const std::string &str)
-{
-  	std::string::const_iterator it;
-  
-  	if(str.length()!=4 || str=="////" || str=="/000"){
-    	kode="";
-    	return false;
-  	}else{
-    	it=str.begin();
-    
-    	while(it!=str.end()){
-     		if(!(isdigit(*it) || *it == '/')){
-				kode="";
-				return false;
-     		}
-     		it++;
-    	}
-    
-    	kode=" 4";
-    	kode+=str;
-  	}
-  
-  	return true;
-}
 
+void
+Synop::
+doExxx( std::string &kode, const SynopData &data )
+{
+	int iE=-1;
+
+	if( data.EE != FLT_MAX  )
+		iE = (int) floor((double) data.EE + 0.5 );
+
+	if( iE < 0  || iE == 33 )
+		doEsss( kode, -1, data );
+	else if( iE >=0 && iE < 10 )
+		doEjjj( kode, iE, data );
+	else if( (iE >= 10 && iE < 20)  )
+		doEsss( kode, iE - 10, data );
+}
 
 /**
  * Coding of E'sss.
@@ -1666,66 +1646,74 @@ Synop::SjekkEsss(std::string &kode, const std::string &str)
 
 void 
 Synop::
-doEsss( std::string &kode, const SynopData &data )
+doEsss( std::string &kode, int EE, const SynopData &data )
 {
-   kode.erase();
-   
-   char buf[16];
-   string em;
-   string sa;
-   int    iSA;
-   int iE = INT_MAX;
-   int iEm = INT_MAX;
+	kode.erase();
 
-   if( data.SA == FLT_MAX )
-   	iSA = INT_MAX;
-   else
-   	iSA = (int) floor((double) data.SA + 0.5 );
-   
-   if( data.EM == FLT_MAX && iSA == INT_MAX && data.EE == FLT_MAX )
-      return;
-   
-   if( data.EE != FLT_MAX  ) {
-	   iE = (int) floor((double) data.EE + 0.5 );
+	char buf[16];
+	string em;
+	string sa;
+	int    iSA;
+	int iEm = INT_MAX;
 
-	   if( iE >= 10 && iE <20 ) {
-		   iEm = iE - 10;
-	   }
-   }
+	if( data.SA == FLT_MAX )
+		iSA = INT_MAX;
+	else
+		iSA = (int) floor((double) data.SA + 0.5 );
 
-   if( iEm == INT_MAX  && data.EM != FLT_MAX ) {
-	   iEm = (int) floor((double) data.EM + 0.5 );
-   }
+	if( data.EM == FLT_MAX && iSA == INT_MAX && EE < 0  )
+		return;
 
-   if( iEm == INT_MAX || iEm < 0 || iEm > 10 || iE == 33 )
-      em = "/";
-   else {
-      sprintf( buf, "%01d", iEm );
-      em = buf;
-   }
-   
-   if( iSA == INT_MAX  || iSA < -3 || iSA > 996 )
-      sa = "///";
-   else if( iSA == -1 ) {
-	   if( em =="/" )
-		   sa = "///";
-	   else
-		   sa = "998";
-   }else if( iSA == 0 )
-	   sa = "997";
-   else if( iSA == -3 )
-	   sa = "999";
-   else if( iSA < 0 )
-	   sa="///";
-   else {
-      sprintf( buf, "%03d", iSA );
-      sa = buf;
-   }
-      
-   //Creates the code 4E'sss
-   kode = " 4" + em + sa;
+	if( EE > -1   )
+		iEm = EE;
+
+	if( iEm == INT_MAX  && data.EM != FLT_MAX )
+		iEm = (int) floor((double) data.EM + 0.5 );
+
+	if( iEm == INT_MAX || iEm < 0 || iEm > 10 )
+		em = "/";
+	else {
+		sprintf( buf, "%01d", iEm );
+		em = buf;
+	}
+
+	if( iSA == INT_MAX  || iSA < -3 || iSA > 996 )
+		sa = "///";
+	else if( iSA == -1 ) {
+		if( em =="/" )
+			sa = "///";
+		else
+			sa = "998";
+	}else if( iSA == 0 )
+		sa = "997";
+	else if( iSA == -3 )
+		sa = "999";
+	else if( iSA < 0 )
+		sa="///";
+	else {
+		sprintf( buf, "%03d", iSA );
+		sa = buf;
+	}
+
+	//Creates the code 4E'sss
+	kode = " 4" + em + sa;
 }
 
+void
+Synop::
+doEjjj( std::string &kode, int EE, const SynopData &data )
+{
+	ostringstream o;
+
+	kode.erase();
+
+	if( EE < 10 )
+		o << " 3" << EE << "///";
+	else
+		o << " 3////";
+
+	kode = o.str();
+}
 
 /*
 ** Sjekkar kode for grupper med 4 teikn;

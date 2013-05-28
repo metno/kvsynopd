@@ -134,8 +134,9 @@ class Synop
     int  ix_Kode(const std::string &str);
     bool doVerGenerelt(std::string &kode, int &ix, const SynopData &data);
     bool SjoeTempKode(std::string &kode, const SynopData &data);
-    bool SjekkEsss(std::string &kode, const std::string &str);
-    void doEsss( std::string &kode, const SynopData &data );
+    void doExxx( std::string &kode, const SynopData &data );
+    void doEsss( std::string &kode, int EE, const SynopData &data );
+    void doEjjj( std::string &kode, int EE, const SynopData &data );
     void GressTempKode(std::string &kode, SynopDataList &sd);
     void SplittStreng(std::string &streng, std::string::size_type index);
 

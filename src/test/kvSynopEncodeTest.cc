@@ -409,6 +409,13 @@ TEST_F( SynopEncodeTest, EmAndE )
    EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1492;
    miutil::cmprspace( synop, true );
    EXPECT_EQ( synop, "AAXX 14061 01492 16/// ///// 1//// 2//// 6//// 333 42///=");
+
+   dt=miTime("2012-03-15 06:00:00");
+   data = allData.subData( dt );
+   EXPECT_TRUE( data.firstTime() == dt );
+   EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1492;
+   miutil::cmprspace( synop, true );
+   EXPECT_EQ( synop, "AAXX 15061 01492 16/// ///// 1//// 2//// 6//// 333 31///=");
 }
 
 
