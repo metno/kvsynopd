@@ -1603,6 +1603,10 @@ doExxx( std::string &kode, const SynopData &data )
 {
 	int iE=-1;
 
+	//Only report 3Esss or 4Ejjj at the 6 termin.
+	if( data.time().hour() != 6 )
+		return;
+
 	if( data.EE != FLT_MAX  )
 		iE = (int) floor((double) data.EE + 0.5 );
 
