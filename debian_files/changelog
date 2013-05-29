@@ -1,3 +1,9 @@
+kvsynopd (2.5.0-rc3-1) unstable; urgency=low
+  * New rc.
+  * Only report 3Esss or 4Ejjj at the 6 termin.
+ 
+ -- Kvalobs <kvalobs@met.no>  Wed, 29 May 2013 12:00:00 +0200
+
 kvsynopd (2.5.0-rc2-1) unstable; urgency=low
   * New rc.
   * Encode 3Ejjj in section 333 if EE is between 0 and 9 inclusive.
