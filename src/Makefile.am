@@ -4,7 +4,6 @@ AM_CPPFLAGS = -D_REENTRANT \
               $(BOOST_CPPFLAGS) \
               $(omniORB4_CFLAGS)  
 
-
 nodist_idl_sources=kvsynopd.idl 
 
 
@@ -47,6 +46,7 @@ kvsynopd_SOURCES = kvsynopd.hh kvsynopdSK.cc \
                    defines.h
 
 kvsynopd_CPPFLAGS = $(AM_CPPFLAGS) 
+kvsynopd_CXXFLAGS=$(GCC_NO_DEPRECATED)
 kvsynopd_LDFLAGS = -pthread -export-dynamic $(BOOST_LDFLAGS)
 
 kvsynopd_LDADD = \
@@ -66,6 +66,7 @@ kvsynopclt_SOURCES = kvsynopclt.cc \
                      kvsynopd.hh kvsynopdSK.cc
                      
 kvsynopclt_CPPFLAGS = $(AM_CPPFLAGS)
+kvsynopclt_CXXFLAGS=$(GCC_NO_DEPRECATED)
 kvsynopclt_LDFLAGS = -pthread $(BOOST_LDFLAGS)
 kvsynopclt_LDADD = $(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
                    -lm  
@@ -79,6 +80,7 @@ kvsynopdparse_SOURCES = kvsynopdparse.cc \
                         StationInfo.cc StationInfo.h \
                         StationInfoParse.cc StationInfoParse.h
 kvsynopdparse_LDFLAGS = -pthread $(BOOST_LDFLAGS)
+kvsynopdparce_CXXFLAGS=$(GCC_NO_DEPRECATED)
 kvsynopdparse_LDADD =  $(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
                      -lm
                         
@@ -111,7 +113,7 @@ kvSynopEncodeTest_SOURCES = test/kvSynopEncodeTest.cc \
 kvSynopEncodeTest_CPPFLAGS = $(AM_CPPFLAGS) \
                            -DTESTDATADIR="\""$(top_srcdir)/src/test"\"" \
                            $(gtest_CFLAGS) 
-
+kvSynopEncodeTest_CXXFLAGS=$(GCC_NO_DEPRECATED)
 kvSynopEncodeTest_LDADD = $(gtest_LIBS) \
 						  $(kvcpp_LIBS) \
 						  $(putools_LIBS) 
