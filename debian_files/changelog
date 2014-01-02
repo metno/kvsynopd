@@ -1,3 +1,10 @@
+kvsynopd (2.5.0-1) unstable; urgency=low
+  * New relase.
+  * No change since last rc.
+ 
+ -- Kvalobs <kvalobs@met.no>  Thu, 02 Jan 2014 10:00:00 +0100
+
+
 kvsynopd (2.5.0-rc3-1) unstable; urgency=low
   * New rc.
   * Only report 3Esss or 4Ejjj at the 6 termin.
