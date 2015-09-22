@@ -68,21 +68,27 @@ kvsynopclt_SOURCES = kvsynopclt.cc \
 kvsynopclt_CPPFLAGS = $(AM_CPPFLAGS)
 kvsynopclt_CXXFLAGS=$(GCC_NO_DEPRECATED)
 kvsynopclt_LDFLAGS = -pthread $(BOOST_LDFLAGS)
-kvsynopclt_LDADD = $(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
-                   -lm  
+kvsynopclt_LDADD = \
+	$(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
+   $(BOOST_SYSTEM_LIB) \
+   -lm  
                    
 kvsynopdbclt_SOURCES = kvsynopdbclt.cc \
                        tblSynop.cc tblSynop.h
 kvsynopdbclt_LDFLAGS = -pthread $(BOOST_LDFLAGS) 
-kvsynopdbclt_LDADD = $(kvcpp_LIBS) $(putools_LIBS)  $(BOOST_THREAD_LIB) \
-                     -lm 
+kvsynopdbclt_LDADD = \
+	$(kvcpp_LIBS) $(putools_LIBS)  $(BOOST_THREAD_LIB) \
+	$(BOOST_SYSTEM_LIB) \
+   -lm 
 kvsynopdparse_SOURCES = kvsynopdparse.cc \
                         StationInfo.cc StationInfo.h \
                         StationInfoParse.cc StationInfoParse.h
 kvsynopdparse_LDFLAGS = -pthread $(BOOST_LDFLAGS)
 kvsynopdparce_CXXFLAGS=$(GCC_NO_DEPRECATED)
-kvsynopdparse_LDADD =  $(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
-                     -lm
+kvsynopdparse_LDADD = \
+	$(kvcpp_LIBS)  $(putools_LIBS)  $(BOOST_THREAD_LIB) \
+	$(BOOST_SYSTEM_LIB) \
+   -lm
                         
 sqldir=$(datadir)/kvsynopd
 sql_DATA=kvsynopd_schema.sql
