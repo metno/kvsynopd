@@ -155,7 +155,7 @@ reloadAll(kvalobs::kvDbGate    &gate,
 
       GetKvDataReceiver myDataReceiver(app, synopFromTime, que, gate, logid);
 
-      if(!app.getKvData(myDataReceiver, which)){
+      if(!app.theKvService->getKvData(myDataReceiver, which)){
          IDLOGERROR( "GetData",
                      "Failed GetData: wmono=" << (*it)->wmono()
                      << " stationids:" << ost.str() << " FromTime: "  << fromTime);
@@ -215,7 +215,7 @@ reloadOne(kvalobs::kvDbGate    &gate,
 
    GetKvDataReceiver myDataReceiver(app, synopFromTime, que, gate, logid );
 
-   if(!app.getKvData(myDataReceiver, which)){
+   if(!app.theKvService->getKvData(myDataReceiver, which)){
       IDLOGERROR("GetData",
                  "Failed GetData: wmono=" << (*stationList.begin())->wmono()
                  << " stationids:" << ost.str() << " FromTime: "  << fromTime);

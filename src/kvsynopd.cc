@@ -130,7 +130,7 @@ main(int argn, char **argv)
     return 1;
   }
   
-  std::string id=app.subscribeData(kvservice::KvDataSubscribeInfoHelper(), newDataQue);
+  std::string id=app.theKvService->subscribeData(kvservice::KvDataSubscribeInfoHelper(), newDataQue);
   
   if(id.empty()){
     LOGFATAL("Cant subscribe on <kvData>.");

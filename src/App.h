@@ -35,7 +35,8 @@
 #ifndef __kvsynopd_app_h__
 #define __kvsynopd_app_h__
 
-#include <kvcpp/corba/CorbaKvApp.h>
+//#include <kvcpp/corba/CorbaKvApp.h>
+#include "kvcpp/KvApp.h"
 #include <kvdb/dbdrivermgr.h>
 #include <list>
 #include <puTools/miTime.h>
@@ -53,7 +54,7 @@ namespace kvsynopd{
 
 class GetData;
 
-class App : public kvservice::corba::CorbaKvApp
+class App
 {
 public:
    typedef std::list<StationInfoPtr>                   StationList;
@@ -69,7 +70,6 @@ private:
    miutil::miTime          startTime_;
    WaitingList             waitingList;
    std::string             confFile;
-   std::string             mypathInCorbaNS;
    std::list<int>          continuesTypeID_;
    std::list<ObsEvent*>    obsEventWaitingOnCacheReload;
    std::list<GetData*>     getDataThreads;
@@ -81,6 +81,8 @@ private:
    boost::mutex mutex;
 
 public:
+   static std::unique_ptr<kvservice::KvApp> theKvService;
+
    App( int argn, char **argv, 
         const std::string &confFile_, miutil::conf::ConfSection *conf);
    ~App();
@@ -145,14 +147,6 @@ public:
    */
   void                 releaseDbConnection(dnmi::db::Connection *con);
 
-  /**
-   * \brief The path in the CORBA nameserver we shall register our
-   *        services.
-   *
-   *  The path is given with corba.kvpath in the configuration file.
-   *  If it is not set, the default is the same as corba.path.
-   */
-  std::string  mypathInCorbaNameserver()const{ return mypathInCorbaNS; }
 
   /**
    * \brief Find the station information based on the stationid.
@@ -432,8 +426,9 @@ public:
    */
   void checkObsEventWaitingOnCacheReload(dnmi::thread::CommandQue &que,
 					 const std::string &logid="");
-
-
+  void doShutdown();
+  bool shutdown() const;
+  void run();
 };
 
 #endif

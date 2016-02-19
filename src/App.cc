@@ -52,6 +52,7 @@ using namespace miutil::conf;
 using boost::mutex;
 using namespace kvservice;
 
+std::unique_ptr<kvservice::KvApp> App::theKvService;
 
 bool
 App::
@@ -88,7 +89,6 @@ createGlobalLogger(const std::string &id)
 App::
 App(int argn, char **argv,   
     const std::string &confFile_, miutil::conf::ConfSection *conf):
-  kvservice::corba::CorbaKvApp(argn, argv, conf), 
   startTime_(miutil::miTime::nowTime()),
   confFile(confFile_), 
   hasStationWaitingOnCacheReload(false),
@@ -97,8 +97,10 @@ App(int argn, char **argv,
   ValElementList valElem;
   string         val;
 
+  theKvService.reset( KvApp::create("kvsynopd", argn, argv));
   LogContext context("ApplicationInit");
 
+  createGlobalLogger("config");
   createGlobalLogger("GetData");
   createGlobalLogger("DelayCtl");
   createGlobalLogger("main");
@@ -128,10 +130,10 @@ App(int argn, char **argv,
   }
 
 
-  valElem=conf->getValue("database.driver");
+  valElem=conf->getValue("database.cache.driver");
 
   if(valElem.empty()){
-    LOGFATAL("No <database.driver> in the configurationfile!");
+    LOGFATAL("No <database.cache.driver> in the configurationfile!");
     exit(1);
   }
 
@@ -147,10 +149,10 @@ App(int argn, char **argv,
     exit(1);
   }
 
-  valElem=conf->getValue("database.dbconnect");
+  valElem=conf->getValue("database.cache.dbconnect");
 
   if(valElem.empty()){
-    LOGFATAL("No <database.dbconnect> in the configurationfile!");
+    LOGFATAL("No <database.cache.dbconnect> in the configurationfile!");
     exit(1);
   }
 
@@ -158,17 +160,6 @@ App(int argn, char **argv,
   
   LOGINFO("Connect string <" << dbConnect << ">!\n");
 
-  valElem=conf->getValue("corba.kvpath");
-
-  if(valElem.empty()){
-    mypathInCorbaNS=nameserverpath;
-  }else{
-    mypathInCorbaNS=valElem[0].valAsString();
-  }
-
-  if(!mypathInCorbaNS.empty() && 
-     mypathInCorbaNS[mypathInCorbaNS.length()-1]!='/')
-    mypathInCorbaNS+='/';
 
   if(!readStationInfo(conf)){
     LOGFATAL("Exit! No configuration!");
@@ -191,28 +182,28 @@ bool
 App::
 initKvSynopInterface(  dnmi::thread::CommandQue &newObsQue )
 {
-   kvSynopdImpl *synopdImpl;
-      
-   try{
-      synopdImpl=new kvSynopdImpl( *this, newObsQue);
-      PortableServer::ObjectId_var id = getPoa()->activate_object(synopdImpl);
-
-      synopRef = synopdImpl->_this();
-      IDLOGINFO( "main", "CORBAREF: " << corbaRef(synopRef) );
-      std::string nsname = "/" + mypathInCorbaNameserver();
-      nsname += "kvsynopd";
-      IDLOGINFO( "main", "CORBA NAMESERVER (register as): " << nsname );
-      putObjInNS(synopRef, nsname);
-   }
-   catch( const std::bad_alloc &ex ) {
-      LOGFATAL("NOMEM: cant initialize the aplication!");
-      return false;
-   }
-   catch(...){
-      IDLOGFATAL("main","CORBA: cant initialize the aplication!");
-      return false;
-   }
-   
+//   kvSynopdImpl *synopdImpl;
+//
+//   try{
+//      synopdImpl=new kvSynopdImpl( *this, newObsQue);
+//      PortableServer::ObjectId_var id = getPoa()->activate_object(synopdImpl);
+//
+//      synopRef = synopdImpl->_this();
+//      IDLOGINFO( "main", "CORBAREF: " << corbaRef(synopRef) );
+//      std::string nsname = "/" + mypathInCorbaNameserver();
+//      nsname += "kvsynopd";
+//      IDLOGINFO( "main", "CORBA NAMESERVER (register as): " << nsname );
+//      putObjInNS(synopRef, nsname);
+//   }
+//   catch( const std::bad_alloc &ex ) {
+//      LOGFATAL("NOMEM: cant initialize the aplication!");
+//      return false;
+//   }
+//   catch(...){
+//      IDLOGFATAL("main","CORBA: cant initialize the aplication!");
+//      return false;
+//   }
+//
    return true;
 }
 
@@ -324,12 +315,15 @@ readStationInfo(miutil::conf::ConfSection *conf)
 {
   StationInfoParse theParser;
   std::list<StationInfoPtr> tmpList;
+  milog::LogManager::setDefaultLogger("config");
 
   if(!theParser.parse(conf, tmpList)){
+    milog::LogManager::resetDefaultLogger();
     LOGFATAL("Cant parse the SYNOP configuration.");
     return false;
-  }    
+  }
 
+  milog::LogManager::resetDefaultLogger();
   stationList=tmpList;
   
   return true;
@@ -1125,3 +1119,16 @@ checkObsEventWaitingOnCacheReload(dnmi::thread::CommandQue &que,
     }
   }
 }
+
+void App::doShutdown() {
+  theKvService->doShutdown();
+}
+
+bool App::shutdown() const
+{
+  theKvService->shutdown();
+}
+void App::run(){
+  theKvService->run();
+}
+
