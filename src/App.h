@@ -84,18 +84,12 @@ public:
    static std::unique_ptr<kvservice::KvApp> theKvService;
 
    App( int argn, char **argv, 
-        const std::string &confFile_, miutil::conf::ConfSection *conf);
+        const std::string &confFile_, std::shared_ptr<miutil::conf::ConfSection> conf);
    ~App();
 
  
    bool acceptAllTimes()const { return acceptAllTimes_;}
 
-   /**
-    * \brief Setup and initialize the interface to kvsynopd.
-    * 
-    * \return true if the subsystem has been setup and false otherwise.
-    */ 
-   bool initKvSynopInterface( dnmi::thread::CommandQue &newObsQue );
   
    /**
     * \brief cretae a globale logger with id \a id.

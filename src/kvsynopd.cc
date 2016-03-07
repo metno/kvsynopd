@@ -60,16 +60,17 @@ main(int argn, char **argv)
 		                                     "kvsynopd" );
 
   dnmi::file::PidFileHelper pidFile;
-  miutil::conf::ConfSection *conf;
+  std::shared_ptr<miutil::conf::ConfSection> conf;
   
   try{
-      conf=miutil::conf::ConfParser::parse(confFile);
+      conf.reset(miutil::conf::ConfParser::parse(confFile));
   }
   catch( const logic_error &ex ){
      LOGFATAL( ex.what() );
      return 1;
   }
   
+  LOGINFO("Using configfile: '" << confFile<<"'.");
   App  app(argn, argv, confFile, conf );
   dnmi::thread::CommandQue newDataQue;  
   dnmi::thread::CommandQue newObsQue;  
@@ -124,12 +125,6 @@ main(int argn, char **argv)
     }
   }
       
-  
-  if( ! app.initKvSynopInterface(  newObsQue ) ){
-    LOGFATAL("Cant initialize the interface to <kvsynopd>.");
-    return 1;
-  }
-  
   std::string id=app.theKvService->subscribeData(kvservice::KvDataSubscribeInfoHelper(), newDataQue);
   
   if(id.empty()){

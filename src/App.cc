@@ -49,7 +49,7 @@ using namespace miutil;
 using namespace kvalobs;
 using namespace milog;
 using namespace miutil::conf;
-using boost::mutex;
+namespace b=boost;
 using namespace kvservice;
 
 std::unique_ptr<kvservice::KvApp> App::theKvService;
@@ -88,7 +88,7 @@ createGlobalLogger(const std::string &id)
 
 App::
 App(int argn, char **argv,   
-    const std::string &confFile_, miutil::conf::ConfSection *conf):
+    const std::string &confFile_, std::shared_ptr<miutil::conf::ConfSection> conf):
   startTime_(miutil::miTime::nowTime()),
   confFile(confFile_), 
   hasStationWaitingOnCacheReload(false),
@@ -97,7 +97,7 @@ App(int argn, char **argv,
   ValElementList valElem;
   string         val;
 
-  theKvService.reset( KvApp::create("kvsynopd", argn, argv));
+  theKvService.reset( KvApp::create("kvsynopd", argn, argv, conf));
   LogContext context("ApplicationInit");
 
   createGlobalLogger("config");
@@ -130,10 +130,10 @@ App(int argn, char **argv,
   }
 
 
-  valElem=conf->getValue("database.cache.driver");
+  valElem=conf->getValue("database.cache.dbdriver");
 
   if(valElem.empty()){
-    LOGFATAL("No <database.cache.driver> in the configurationfile!");
+    LOGFATAL("No <database.cache.dbdriver> in the configurationfile!");
     exit(1);
   }
 
@@ -161,15 +161,12 @@ App(int argn, char **argv,
   LOGINFO("Connect string <" << dbConnect << ">!\n");
 
 
-  if(!readStationInfo(conf)){
+  if(!readStationInfo(conf.get())){
     LOGFATAL("Exit! No configuration!");
     exit(1);
   }
   
   readWaitingElementsFromDb();
-
-  //We dont need conf any more.
-  delete conf;
 }
 
 App::
@@ -178,34 +175,6 @@ App::
 }
 
 
-bool
-App::
-initKvSynopInterface(  dnmi::thread::CommandQue &newObsQue )
-{
-//   kvSynopdImpl *synopdImpl;
-//
-//   try{
-//      synopdImpl=new kvSynopdImpl( *this, newObsQue);
-//      PortableServer::ObjectId_var id = getPoa()->activate_object(synopdImpl);
-//
-//      synopRef = synopdImpl->_this();
-//      IDLOGINFO( "main", "CORBAREF: " << corbaRef(synopRef) );
-//      std::string nsname = "/" + mypathInCorbaNameserver();
-//      nsname += "kvsynopd";
-//      IDLOGINFO( "main", "CORBA NAMESERVER (register as): " << nsname );
-//      putObjInNS(synopRef, nsname);
-//   }
-//   catch( const std::bad_alloc &ex ) {
-//      LOGFATAL("NOMEM: cant initialize the aplication!");
-//      return false;
-//   }
-//   catch(...){
-//      IDLOGFATAL("main","CORBA: cant initialize the aplication!");
-//      return false;
-//   }
-//
-   return true;
-}
 
 
 void 
@@ -252,7 +221,7 @@ void
 App::
 continuesTypeID(const std::list<int> &continuesTimes)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   continuesTypeID_=continuesTimes;
 }
 
@@ -260,7 +229,7 @@ std::list<int>
 App::
 continuesTypeID()
 { 
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   return continuesTypeID_;
 }
@@ -274,7 +243,7 @@ bool
 App::
 onlyNoContinuesTypeID(StationInfoPtr st)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   StationInfo::TLongList tp=st->typepriority();
   StationInfo::ITLongList itp;
@@ -296,7 +265,7 @@ bool
 App::
 isContinuesType(int typeID)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   for(list<int>::iterator it=continuesTypeID_.begin();
       it!=continuesTypeID_.end(); it++){
@@ -464,7 +433,7 @@ addWaiting(WaitingPtr w, bool replace, dnmi::db::Connection *con)
 {
   IWaitingList it;
 
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   
   for(it=waitingList.begin(); it!=waitingList.end(); it++){
     if(w->info()->wmono()==(*it)->info()->wmono() &&
@@ -512,7 +481,7 @@ getWaiting(const miutil::miTime &obstime,
 	   int                  wmono,
 	   dnmi::db::Connection *con)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   IWaitingList it;
 
   for(it=waitingList.begin(); it!=waitingList.end(); it++){
@@ -542,7 +511,7 @@ getExpired()
   ostringstream ost;
   bool          msg=false;
 
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   
   milog::LogContext context("Delay");
 
@@ -587,7 +556,7 @@ getDelayList(miutil::miTime &nowTime)
 {
   kvsynopd::DelayList *dl;
     
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   nowTime=miTime::nowTime();
 
@@ -631,7 +600,7 @@ removeWaiting(int wmono,
 {
   IWaitingList it;
   
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   
   for(it=waitingList.begin(); it!=waitingList.end(); it++){
     if(wmono==(*it)->info()->wmono() &&
@@ -742,7 +711,7 @@ StationInfoPtr
 App::
 replaceStationInfo(StationInfoPtr newInfoPtr)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   IStationList it=stationList.begin();
   
@@ -854,7 +823,7 @@ getDataFrom(const miutil::miTime &t,
     return false;
   }
 
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   getDataThreads.push_back(getData);
 
@@ -866,7 +835,7 @@ bool
 App::
 joinGetDataThreads(bool waitToAllIsJoined, const std::string &logid)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   std::list<GetData*>::iterator it=getDataThreads.begin();
   bool   joined=false;
 
@@ -896,7 +865,7 @@ void
 App::
 cacheReloaded(int wmono)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   IStationList it=stationList.begin();
 
@@ -912,7 +881,7 @@ App::StationList
 App::
 reloadCache(int wmono)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   StationList myStationList;
   
   IStationList it=stationList.begin();
@@ -943,7 +912,7 @@ kvsynopd::ReloadList*
 App::
 listCacheReload()
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   kvsynopd::ReloadList *retlist;
   
   StationList myStationList;
@@ -993,7 +962,7 @@ App::
 addObsEvent(ObsEvent *event,
 	    dnmi::thread::CommandQue &que)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
 
   if(!hasStationWaitingOnCacheReload){
     try{
@@ -1048,7 +1017,7 @@ App::
 checkObsEventWaitingOnCacheReload(dnmi::thread::CommandQue &que,
 				  const std::string &logid)
 {
-  mutex::scoped_lock lock(mutex);
+  b::mutex::scoped_lock lock(mutex);
   
   IDLOGDEBUG(logid, "CheckObsEventWaitingOnCacheReload called!");
 
