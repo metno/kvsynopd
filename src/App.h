@@ -62,7 +62,6 @@ public:
    typedef std::list<StationInfoPtr>::const_iterator CIStationList;
   
 private:
-   dnmi::db::DriverManager dbMgr;
    std::string             dbDriver;
    std::string             dbConnect;
    std::string             dbDriverId;

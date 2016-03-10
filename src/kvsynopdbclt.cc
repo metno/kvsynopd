@@ -61,7 +61,6 @@ use(int exitstatus);
 bool 
 getDbInfo(miutil::conf::ConfSection* conf,
 	  const std::string &useThisConnect);
-dnmi::db::DriverManager dbMgr;      //set by getDbConf
 std::string             dbDriver;   //set by getDbConf
 std::string             dbConnect;  //set by getDbConf
 std::string             dbDriverId; //set by getDbConf
@@ -288,9 +287,9 @@ getDbInfo(miutil::conf::ConfSection* conf,
   
   cerr << "Loading driver for database engine <" << dbDriver << ">!" << endl;
   
-  if(!dbMgr.loadDriver(dbDriver, dbDriverId)){
+  if(!dnmi::db::DriverManager::loadDriver(dbDriver, dbDriverId)){
     cerr << "Can't load driver <" << dbDriver << endl 
-	 << dbMgr.getErr() << endl 
+	 << dnmi::db::DriverManager::getErr() << endl
 	 << "Check if the driver is in the directory $KVALOBS/lib/db???"
 	 << endl;
 
@@ -349,7 +348,7 @@ getNewDbConnection()
 {
   dnmi::db::Connection *con;
   
-  con=dbMgr.connect(dbDriverId, dbConnect);
+  con=dnmi::db::DriverManager::connect(dbDriverId, dbConnect);
   
   if(!con){
     cerr << "Can't create a database connection  (" 
@@ -367,7 +366,7 @@ getNewDbConnection()
 void                  
 releaseDbConnection(dnmi::db::Connection *con)
 {
-  dbMgr.releaseConnection(con);
+  dnmi::db::DriverManager::releaseConnection(con);
 }
 
 bool
