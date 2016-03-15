@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([kvsynopd], [2.9.1], [kvoss@met.no])
+AC_INIT([kvsynopd], [2.9.2], [kvoss@met.no])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 
