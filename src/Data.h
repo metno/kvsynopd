@@ -92,7 +92,7 @@ public:
 	std::string      original()    const { return original_;   }
 	int              paramID()     const { return paramid_;    }
 	int              typeID()      const { return typeid_;     }
-	int              sensor()      const { return sensor_-'0'; }
+	int              sensor()      const { return sensor_; }
 	int              level()       const { return level_;      }
 	kvalobs::kvControlInfo controlinfo()const;
 	kvalobs::kvUseInfo useinfo()const;
