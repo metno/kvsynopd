@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([kvsynopd], [2.9.2], [kvoss@met.no])
+AC_INIT([kvsynopd], [3.0.0], [kvoss@met.no])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -36,7 +36,8 @@ if test -z $BOOST_SYSTEM_LIB; then AC_MSG_ERROR([Unable to find boost system lib
 
 
 AC_CONFIG_FILES([Makefile
-			     src/gtest/Makefile
+                 debian_files/Makefile
+			        src/gtest/Makefile
                  check_kvsynopd.sh
                  src/kvsynopd_initdb
                  src/Makefile

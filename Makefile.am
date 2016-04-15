@@ -1,5 +1,5 @@
 export GCC_NO_DEPRECATED=-Wno-deprecated-declarations
-SUBDIRS = src/gtest src 
+SUBDIRS = debian_files src/gtest src 
 ACLOCAL_AMFLAGS = -I m4
 sqldir = $(datadir)/kvsynopd
 sql_DATA = cleansynopdb.sql 
