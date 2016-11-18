@@ -91,7 +91,7 @@ protected:
 
 		ConfSection *conf = confParser.parse( iconf );
 
-		ASSERT_TRUE( conf ) << "Cant parse the configuration settings.";
+		ASSERT_TRUE(conf) << "Cant parse the configuration settings.";
 
 		StationInfoParse stationParser;
 
@@ -116,7 +116,7 @@ TEST_F( SynopEncodeTest, RR24_for_RRRtr )
 	kvdatacheck::Validate validData( kvdatacheck::Validate::NoCheck );
 	stInfo = findWmoNo( 1389 );
 
-	ASSERT_TRUE( stInfo ) << "No station information for wmono " << 1389;
+	ASSERT_TRUE(stInfo.get()) << "No station information for wmono " << 1389;
 
 	loadSynopDataFromFile( "data_7010-1.dat", stInfo, data, validData );
 	EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
@@ -155,7 +155,7 @@ TEST_F( SynopEncodeTest, encode_TzFxFx )
 	stInfo = findWmoNo( wmono );
 
 
-	ASSERT_TRUE( stInfo ) << "No station information for wmono " << wmono;
+	ASSERT_TRUE(stInfo.get()) << "No station information for wmono " << wmono;
 
 	loadSynopDataFromFile( "data_TzFxFx-1.dat", stInfo, data, validData );
 	EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
@@ -216,7 +216,7 @@ TEST_F( SynopEncodeTest, encode_nddff )
    stInfo = findWmoNo( wmono );
 
 
-   ASSERT_TRUE( stInfo ) << "No station information for wmono " << wmono;
+   ASSERT_TRUE(stInfo.get()) << "No station information for wmono " << wmono;
 
    loadSynopDataFromFile( "data_nddff.dat", stInfo, allData, validData );
 
@@ -311,7 +311,7 @@ TEST_F( SynopEncodeTest, encode_noData )
    stInfo = findWmoNo( wmono );
 
 
-   ASSERT_TRUE( stInfo ) << "No station information for wmono " << wmono;
+   ASSERT_TRUE(stInfo.get()) << "No station information for wmono " << wmono;
 
    loadSynopDataFromFile( "data_4780-1.dat", stInfo, data, validData );
 
@@ -357,7 +357,7 @@ TEST_F( SynopEncodeTest, RR_FROM_RA )
    kvdatacheck::Validate validData( kvdatacheck::Validate::NoCheck );
    stInfo = findWmoNo( 1327 );
 
-   ASSERT_TRUE( stInfo );
+   ASSERT_TRUE(stInfo.get());
 
    loadSynopDataFromFile( "data-50310.dat", stInfo, data, validData );
    EXPECT_TRUE( synopEncoder.doSynop( stInfo, data, synop, false ) ) << "FAILED: Cant generate synop for "<< 1389;
@@ -379,7 +379,7 @@ TEST_F( SynopEncodeTest, EmAndE )
    kvdatacheck::Validate validData( kvdatacheck::Validate::NoCheck );
    stInfo = findWmoNo( 1492 );
 
-   ASSERT_TRUE( stInfo );
+   ASSERT_TRUE(stInfo.get());
 
    loadSynopDataFromFile( "data_18700-1.dat", stInfo, allData, validData );
    dt=miTime("2012-03-12 06:00:00");
