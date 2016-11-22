@@ -77,9 +77,9 @@ loadSynopData(const DataEntryList &dl,
 				//the parameters we wish to override this behavior for.
 
 				if(itd->sensor()==0 && itd->level()==0){
-					if( validate( *itd ) )
+					if( validate( *itd ) ) {
 						synopData.setData(itd->paramID(), itd->original(), itd->typeID() );
-					else {
+					} else {
 						LOGDEBUG("CheckData: do NOT use: " << itd->obstime() << " " << itd->paramID() << " " << itd->typeID() << " val: "
 								 << itd->original() << " cinfo: " << itd->controlinfo().flagstring() << " uinfo: "
 								 << itd->useinfo().flagstring() );

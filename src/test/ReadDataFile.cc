@@ -65,7 +65,6 @@ readDataFile( const std::string &filename, DataEntryList &data, const miutil::mi
 		if( line.empty() )
 			continue;
 
-
 		miutil::CommaString dataValues( line, '|' );
 
 		if( dataValues.size() != 12 )
@@ -78,7 +77,7 @@ readDataFile( const std::string &filename, DataEntryList &data, const miutil::mi
 
 		Data d( atoi( dataValues[0].c_str() ), obstime,
 				dataValues[2], atoi( dataValues[3].c_str() ) ,
-				atoi( dataValues[5].c_str() ), atoi( dataValues[6].c_str() )+'0',
+				atoi( dataValues[5].c_str() ), atoi( dataValues[6].c_str() ),
 				atoi( dataValues[7].c_str() ), dataValues[9], dataValues[10] );
 
 		data.insert( d );
@@ -119,6 +118,7 @@ loadSynopDataFromFile( const std::string &filename,
 		return false;
 	}
 
+	//cerr << "Raw data: " << rawdata.size() << endl << rawdata << endl;
 	loadSynopData( rawdata, sd, info, validate );
 
 	//cerr << sd << endl;

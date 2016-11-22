@@ -107,13 +107,13 @@ kvSynopEncodeTest_SOURCES = test/kvSynopEncodeTest.cc \
 							test/ReadDataFile.h test/ReadDataFile.cc \
 							Data.cc Data.h\
 							DataList.cc DataList.h \
-		                    SynopData.cc SynopData.h \
-		                    StationInfo.cc StationInfo.h \
-						    StationInfoParse.cc StationInfoParse.h \
-		                    synop.cc synop.h \
-		                    Validate.cc Validate.h \
-		                    InitLogger.cc InitLogger.h \
-		                    LoadSynopData.h LoadSynopData.cc 
+		               SynopData.cc SynopData.h \
+		               StationInfo.cc StationInfo.h \
+						   StationInfoParse.cc StationInfoParse.h \
+		               synop.cc synop.h \
+		               Validate.cc Validate.h \
+		               InitLogger.cc InitLogger.h \
+		               LoadSynopData.h LoadSynopData.cc 
 		                    
  
 kvSynopEncodeTest_CPPFLAGS = $(AM_CPPFLAGS) \
