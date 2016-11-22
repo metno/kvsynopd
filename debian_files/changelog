@@ -1,3 +1,8 @@
+kvsynopd (3.0.2-1) unstable; urgency=low
+  * Fix the tests.
+  
+ -- Kvalobs <kvalobs@met.no>  Tue, 22 Nov 2016 07:30:00 +0100
+
 kvsynopd (3.0.1-1) unstable; urgency=low
   * Recompile against kvalobs 3.0.1.
   
